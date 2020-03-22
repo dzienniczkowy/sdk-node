@@ -36,13 +36,9 @@ export class Client {
         const x = cheerio.load(xml, {
           xmlMode: true,
         });
-        let symbols: string[];
-        x('[AttributeName$="UserInstance"]').map(function a() {
-          symbols = [];
-          this.children.forEach((r) => {
-            symbols.push(r.children[0].data);
-          });
-          return symbols;
+        const symbols: string[] = [];
+        x('[AttributeName$="UserInstance"] saml\\:AttributeValue').each(function a(i) {
+          symbols[i] = x(this).text();
         });
         if (symbols.length === 0) {
           reject(new Error('Nie znaleziono symbolu. Zaloguj się, podając dodatkowo symbol.'));
