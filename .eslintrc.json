@@ -14,7 +14,10 @@
     "no-console": "off",
     "no-plusplus": "off",
     "no-shadow": "warn",
-    "@typescript-eslint/indent": ["error", 2]
+    "@typescript-eslint/indent": ["error", 2],
+    "import/prefer-default-export": "off",
+    "class-methods-use-this": "off",
+    "lines-between-class-members": [2, "always", {"exceptAfterSingleLine": true}]
   },
   "parserOptions": {
     "sourceType":  "module"

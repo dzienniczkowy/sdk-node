@@ -29,6 +29,11 @@
     "typescript": "^3.3.4000"
   },
   "dependencies": {
-    "@types/node": "^11.11.6"
+    "@types/node": "^11.11.6",
+    "axios": "^0.19.2",
+    "axios-cookiejar-support": "^0.5.1",
+    "cheerio": "^1.0.0-rc.3",
+    "querystring": "^0.2.0",
+    "tough-cookie": "^3.0.1"
   }
 }
