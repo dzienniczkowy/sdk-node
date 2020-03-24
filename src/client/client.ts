@@ -101,7 +101,7 @@ export class Client {
       throw new Error(errorMessage.text().trim());
     }
 
-    return $('[name=hiddenform]').find('[name=wresult]').attr('value');
+    return $('[name=hiddenform] [name=wresult]').attr('value');
   }
 
   /**
