@@ -1,9 +1,8 @@
 import tough, { CookieJar } from 'tough-cookie';
 import { stringify } from 'querystring';
 import cheerio from 'cheerio';
-
-const axios = require('axios').default;
-const axiosCookieJarSupport = require('axios-cookiejar-support').default;
+import axios from 'axios';
+import axiosCookieJarSupport from 'axios-cookiejar-support';
 
 export class Client {
   public symbol: string;
