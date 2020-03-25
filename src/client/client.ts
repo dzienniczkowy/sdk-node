@@ -80,11 +80,9 @@ export class Client {
   private async initClient(mainResponse: string, symbol: string): Promise<boolean> {
     this.symbol = symbol;
     const $ = cheerio.load(mainResponse);
-    const links = [];
-    $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]').each((index, value) => {
-      const link = $(value).attr('href');
-      links.push(link);
-    });
+    const links: string[] = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]').map(
+      (index, value) => $(value).attr('href'),
+    ).get();
     return true;
   }
 
