@@ -13,7 +13,7 @@ export const parseLoginResponds = (html: string): string => {
 
   if (errorMessage.length) {
     const errorMessageText = errorMessage.text().trim();
-    if (errorMessageText === 'Zła nazwa użytkownika lub hasło') throw new InvalidCredentialsError();
+    if (errorMessageText.includes('Zła nazwa użytkownika lub hasło')) throw new InvalidCredentialsError();
     throw new Error(errorMessageText);
   }
 
