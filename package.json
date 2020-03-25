@@ -1,5 +1,5 @@
 {
-  "name": "wulkanowy-js-api",
+  "name": "@wulkanowy/sdk",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -12,14 +12,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wulkanowy/js-api.git"
+    "url": "git+https://github.com/wulkanowy/sdk-node.git"
   },
-  "author": "Dominik Korsa <dominik.korsa@gmail.com> (https://github.com/dominik-korsa)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wulkanowy/js-api/issues"
+    "url": "https://github.com/wulkanowy/sdk-node/issues"
   },
-  "homepage": "https://github.com/wulkanowy/js-api#readme",
+  "homepage": "https://github.com/wulkanowy/sdk-node#readme",
   "devDependencies": {
     "@types/cheerio": "^0.22.17",
     "@types/node": "^11.15.7",
