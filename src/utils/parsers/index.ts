@@ -1,7 +1,7 @@
 import cheerio from 'cheerio';
 
 /**
- * Parsing login respond to find `wresult` in hidden form in respond from UONET API.
+ * Parsing login respond to get users recently used region symbols.
  * @param html HTML respond data to parse.
  * @return XML data.
  */
