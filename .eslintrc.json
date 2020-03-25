@@ -1,25 +1,37 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
-  "extends": [
-    "airbnb-base",
-    "plugin:@typescript-eslint/recommended"
-  ],
-  "rules": {
-    "import/no-dynamic-require": "off",
-    "global-require": "off",
-    "consistent-return": "off",
-    "no-console": "off",
-    "no-plusplus": "off",
-    "no-shadow": "warn",
-    "@typescript-eslint/indent": ["error", 2],
-    "import/prefer-default-export": "off",
-    "class-methods-use-this": "off",
-    "lines-between-class-members": [2, "always", {"exceptAfterSingleLine": true}]
-  },
-  "parserOptions": {
-    "sourceType":  "module"
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": [
+        "airbnb-typescript/base"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module",
+        "project": "./tsconfig.json"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+      "import/prefer-default-export": ["off"],
+      "class-methods-use-this": "off",
+      "import/extensions": "off"
+    },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".ts"
+        ]
+      }
+    }
   }
 }
