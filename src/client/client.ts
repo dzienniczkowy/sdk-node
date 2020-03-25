@@ -5,16 +5,34 @@ import {
 import { BaseClient } from './base';
 import { DefaultAjaxPostPayload, LoginPostParams } from './types';
 
+/**
+ * API client for SDK.
+ */
 export class Client extends BaseClient {
+  /**
+   * User region login sign.
+   */
   public symbol: string;
 
   public userList: object;
 
+  /**
+   * API client for SDK constructor.
+   * @param host Default host used by user.
+   */
   public constructor(host: string) {
     super();
     this.host = host;
   }
 
+  /**
+   * Login user to UONET.
+   *
+   * Covers region symbol finding.
+   * @param username User login.
+   * @param password User password.
+   * @resolve Region symbol for user.
+   */
   public async login(username: string, password: string): Promise<string> {
     const response = await this.post<LoginPostParams, string>(
       loginUrl(this.host),
