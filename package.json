@@ -21,12 +21,15 @@
   "homepage": "https://github.com/wulkanowy/sdk-node#readme",
   "devDependencies": {
     "@types/cheerio": "^0.22.17",
+    "@types/jest": "^25.1.4",
     "@types/node": "^11.15.7",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^7.2.0",
     "eslint-plugin-import": "^2.20.1",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
     "typescript": "^3.8.3"
   },
   "dependencies": {
