@@ -14,3 +14,6 @@ dist/
 
 # Package lock
 package-lock.json
+
+# Code coverage
+coverage
