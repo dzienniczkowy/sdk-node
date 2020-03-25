@@ -8,7 +8,8 @@
     "strict": false,
     "esModuleInterop": true,
     "types": [
-      "node"
+      "node",
+      "jest"
     ]
   }
 }

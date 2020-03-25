@@ -6,9 +6,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "lint": "./node_modules/.bin/eslint src/index.ts",
-    "lint:fix": "./node_modules/.bin/eslint src/index.ts --fix",
-    "test": "npm run lint"
+    "lint": "eslint src/**.ts",
+    "lint:fix": "eslint src/**.ts --fix",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
