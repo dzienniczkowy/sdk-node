@@ -1,4 +1,4 @@
-const wulkanowy = require('../src/index.ts');
+import * as wulkanowy from '../src';
 
 const client = new wulkanowy.Client('fakelog.cf');
 
