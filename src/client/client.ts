@@ -1,85 +1,81 @@
-import tough from 'tough-cookie';
-import qs from 'querystring';
 import cheerio from 'cheerio';
+import {
+  checkUserSignUrl, loginUrl, parseLoginResponds, parseSymbolsXml,
+} from '../utils';
+import { BaseClient } from './base';
+import { DefaultAjaxPostPayload, LoginPostParams } from './types';
 
-const axios = require('axios').default;
-const axiosCookieJarSupport = require('axios-cookiejar-support').default;
-
-export class Client {
+/**
+ * API client for SDK.
+ */
+export class Client extends BaseClient {
+  /**
+   * User region login sign.
+   */
   public symbol: string;
+
   public userList: object;
 
-  public async login(username: string, password: string, host: string): Promise<string> {
-    return new Promise(async (resolve, reject) => {
-      axiosCookieJarSupport(axios);
-      const cookieJar = new tough.CookieJar();
-      axios.post(
-        `https://cufs.${host}/Default/Account/LogOn?ReturnUrl=%2FDefault%2FFS%2FLS%3Fwa%3Dwsignin1.0%26wtrealm%3Dhttps%253a%252f%252fuonetplus.${host}%252fDefault%252fLoginEndpoint.aspx%26wctx%3Dhttps%253a%252f%252fuonetplus.${host}%252fDefault%252fLoginEndpoint.aspx`,
-        qs.stringify({
-          LoginName: username,
-          Password: password,
-        }),
-        {
-          jar: cookieJar,
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
-      ).then((response) => {
-        const $ = cheerio.load(response.data);
-        if ($('.ErrorMessage').length) {
-          reject(new Error($('.ErrorMessage').text().trim()));
-          return;
-        }
-        const xml = $('[name=hiddenform]').find('[name=wresult]').attr('value');
-        const x = cheerio.load(xml, {
-          xmlMode: true,
-        });
-        const symbols: string[] = [];
-        x('[AttributeName$="UserInstance"] saml\\:AttributeValue').each(function a(i) {
-          symbols[i] = x(this).text();
-        });
-        if (symbols.length === 0) {
-          reject(new Error('Nie znaleziono symbolu. Zaloguj się, podając dodatkowo symbol.'));
-          return;
-        }
-        for (let i = 0; i < symbols.length; i++) {
-          const symbol = symbols[i];
-          axios.post(
-            `https://uonetplus.${host}/${symbol}/LoginEndpoint.aspx`,
-            qs.stringify({
-              wa: 'wsignin1.0',
-              wresult: xml,
-              wctx: `https://uonetplus.${host}/${symbol}/LoginEndpoint.aspx`,
-            }),
-            {
-              jar: cookieJar,
-              withCredentials: true,
-              headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-            },
-
-          ).then((responselog) => {
-            if (responselog.data.includes('appLink')) {
-              this.initClient(responselog.data, symbol);
-              resolve(symbol);
-            }
-          });
-        }
-      });
-    });
+  /**
+   * API client for SDK constructor.
+   * @param host Default host used by user.
+   */
+  public constructor(host: string) {
+    super();
+    this.host = host;
   }
+
+  /**
+   * Login user to UONET.
+   *
+   * Covers region symbol finding.
+   * @param username User login.
+   * @param password User password.
+   * @resolve Region symbol for user.
+   */
+  public async login(username: string, password: string): Promise<string> {
+    const response = await this.post<LoginPostParams, string>(
+      loginUrl(this.host),
+      {
+        LoginName: username,
+        Password: password,
+      },
+    );
+
+    const xml = parseLoginResponds(response.data);
+
+    const symbols = parseSymbolsXml(xml);
+
+    await Promise.all(symbols.map(async (symbol) => {
+      const currentUrl = checkUserSignUrl(this.host, symbol);
+      const { data } = await this.post<DefaultAjaxPostPayload, string>(
+        currentUrl,
+        {
+          wa: 'wsignin1.0',
+          wresult: xml,
+          wctx: currentUrl,
+        },
+      );
+
+      if (data.includes('appLink')) {
+        this.initClient(data, symbol);
+      }
+    }));
+
+    return this.symbol;
+  }
+
+  /**
+   * Client host.
+   */
+  private readonly host: string = '';
 
   private async initClient(mainResponse: string, symbol: string): Promise<boolean> {
     this.symbol = symbol;
     const $ = cheerio.load(mainResponse);
-    const links = [];
-    $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]').each((index, value) => {
-      const link = $(value).attr('href');
-      links.push(link);
-    });
+    const links: string[] = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]').map(
+      (index, value) => $(value).attr('href'),
+    ).get();
     return true;
   }
 }
