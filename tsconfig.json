@@ -4,11 +4,12 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "./",
     "strict": false,
     "esModuleInterop": true,
     "types": [
-      "node"
+      "node",
+      "jest"
     ]
   }
 }
