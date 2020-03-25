@@ -73,6 +73,8 @@ export class Client extends BaseClient {
   private async initClient(mainResponse: string, symbol: string): Promise<boolean> {
     this.symbol = symbol;
     const $ = cheerio.load(mainResponse);
+    // REMOVE LINE BELOW WHEN CREATING THIS FEATURE
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const links: string[] = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]').map(
       (index, value) => $(value).attr('href'),
     ).get();
