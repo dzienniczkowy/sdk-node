@@ -12,8 +12,5 @@ dist/
 # VSCode settings
 .vscode
 
-# Package lock
-package-lock.json
-
 # Code coverage
 coverage
