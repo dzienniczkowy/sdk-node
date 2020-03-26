@@ -11,3 +11,6 @@ dist/
 
 # VSCode settings
 .vscode
+
+# Code coverage
+coverage
