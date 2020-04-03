@@ -5,7 +5,10 @@
     "node": true
   },
   "extends": [
-    "airbnb-typescript/base"
+    "airbnb-typescript/base",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -22,7 +25,6 @@
   ],
   "rules": {
     "import/prefer-default-export": ["off"],
-    "class-methods-use-this": "off",
     "import/extensions": "off"
   },
   "settings": {
