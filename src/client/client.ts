@@ -1,9 +1,9 @@
-import cheerio from 'cheerio';
 import {
   checkUserSignUrl, loginUrl, parseLoginResponds, parseSymbolsXml,
 } from '../utils';
 import { BaseClient } from './base';
 import { DefaultAjaxPostPayload, LoginPostParams } from './types';
+import cheerio from 'cheerio';
 
 /**
  * API client for SDK.

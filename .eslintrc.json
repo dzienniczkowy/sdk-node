@@ -25,7 +25,13 @@
   ],
   "rules": {
     "import/prefer-default-export": ["off"],
-    "import/extensions": ["error", "never"]
+    "import/extensions": ["error", "never"],
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "import/order": ["error", {
+      "alphabetize": {
+        "order": "asc"
+      }
+    }]
   },
   "settings": {
     "import/resolver": {

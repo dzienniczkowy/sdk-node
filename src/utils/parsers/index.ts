@@ -1,6 +1,6 @@
-import cheerio from 'cheerio';
-import UnknownSymbolError from '../../errors/unknown-symbol';
 import InvalidCredentialsError from '../../errors/invalid-credentials';
+import UnknownSymbolError from '../../errors/unknown-symbol';
+import cheerio from 'cheerio';
 
 /**
  * Parsing login respond to get users recently used region symbols.
