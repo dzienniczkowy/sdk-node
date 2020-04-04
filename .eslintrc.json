@@ -25,7 +25,7 @@
   ],
   "rules": {
     "import/prefer-default-export": ["off"],
-    "import/extensions": "off"
+    "import/extensions": ["error", "never"]
   },
   "settings": {
     "import/resolver": {
