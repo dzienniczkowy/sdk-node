@@ -12,9 +12,9 @@ export class Client extends BaseClient {
   /**
    * User region login sign.
    */
-  public symbol: string;
+  public symbol: string | undefined;
 
-  public userList: object;
+  // public userList: object;
 
   /**
    * API client for SDK constructor.
@@ -62,7 +62,8 @@ export class Client extends BaseClient {
       }
     }));
 
-    return this.symbol;
+    // TODO: Remove type assertion
+    return this.symbol as string;
   }
 
   /**

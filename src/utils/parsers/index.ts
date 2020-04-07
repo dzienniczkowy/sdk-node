@@ -17,7 +17,7 @@ export const parseLoginResponds = (html: string): string => {
     throw new Error(errorMessageText);
   }
 
-  return $('[name=hiddenform] [name=wresult]').attr('value');
+  return $('[name=hiddenform] [name=wresult]').attr('value') as string;
 };
 
 /**
@@ -25,7 +25,7 @@ export const parseLoginResponds = (html: string): string => {
  * @param xml
  * @returns Array of symbols.
  */
-export const parseSymbolsXml = (xml): string[] => {
+export const parseSymbolsXml = (xml: string): string[] => {
   const $ = cheerio.load(xml, {
     xmlMode: true,
   });
