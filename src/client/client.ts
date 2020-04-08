@@ -15,8 +15,6 @@ export class Client extends BaseClient {
    */
   public symbol: string | undefined;
 
-  // public userList: object;
-
   /**
    * API client for SDK constructor.
    * @param host Default host used by user.
