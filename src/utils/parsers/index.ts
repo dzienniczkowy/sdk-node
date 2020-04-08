@@ -18,7 +18,7 @@ export const parseLoginResponds = (html: string): string => {
   }
 
   const xml = $('[name=hiddenform] [name=wresult]').attr('value');
-  if (!xml) throw new Error('Can\'t find element [name=hiddenform] [name=wresult]');
+  if (!xml) throw new Error('Can\'t find element "[name=hiddenform] [name=wresult]"');
   return xml;
 };
 
