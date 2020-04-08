@@ -4,6 +4,7 @@ import {
 } from '../utils';
 import { BaseClient } from './base';
 import { DefaultAjaxPostPayload, LoginPostParams } from './types';
+import UnknownSymbolError from "../errors/unknown-symbol";
 
 /**
  * API client for SDK.
@@ -63,7 +64,8 @@ export class Client extends BaseClient {
     }));
 
     // TODO: Remove type assertion
-    return this.symbol as string;
+    if (!this.symbol) throw new UnknownSymbolError();
+    return this.symbol;
   }
 
   /**
