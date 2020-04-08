@@ -1,10 +1,10 @@
 import cheerio from 'cheerio';
+import UnknownSymbolError from '../errors/unknown-symbol';
 import {
   checkUserSignUrl, loginUrl, parseLoginResponds, parseSymbolsXml,
 } from '../utils';
 import { BaseClient } from './base';
 import { DefaultAjaxPostPayload, LoginPostParams } from './types';
-import UnknownSymbolError from "../errors/unknown-symbol";
 
 /**
  * API client for SDK.
