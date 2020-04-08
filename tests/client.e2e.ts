@@ -1,8 +1,10 @@
 import * as wulkanowy from '../src';
 
+jest.setTimeout(30000);
+
 describe('Client', () => {
   describe('Login method', () => {
-    let client;
+    let client: wulkanowy.Client;
 
     beforeEach(() => {
       client = new wulkanowy.Client('fakelog.cf');

@@ -1,4 +1,5 @@
 import cheerio from 'cheerio';
+import UnknownSymbolError from '../errors/unknown-symbol';
 import {
   checkUserSignUrl, loginUrl, parseLoginResponds, parseSymbolsXml,
 } from '../utils';
@@ -12,9 +13,7 @@ export class Client extends BaseClient {
   /**
    * User region login sign.
    */
-  public symbol: string;
-
-  public userList: object;
+  public symbol: string | undefined;
 
   /**
    * API client for SDK constructor.
@@ -62,6 +61,8 @@ export class Client extends BaseClient {
       }
     }));
 
+    // TODO: Remove type assertion
+    if (!this.symbol) throw new UnknownSymbolError();
     return this.symbol;
   }
 
@@ -70,14 +71,11 @@ export class Client extends BaseClient {
    */
   private readonly host: string = '';
 
-  private async initClient(mainResponse: string, symbol: string): Promise<boolean> {
+  private initClient(mainResponse: string, symbol: string): void {
     this.symbol = symbol;
     const $ = cheerio.load(mainResponse);
-    // REMOVE LINE BELOW WHEN CREATING THIS FEATURE
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const links: string[] = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]').map(
       (index, value) => $(value).attr('href'),
     ).get();
-    return true;
   }
 }

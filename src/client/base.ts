@@ -1,7 +1,7 @@
-import axiosCookieJarSupport from 'axios-cookiejar-support';
-import axios from 'axios';
-import { CookieJar } from 'tough-cookie';
 import { stringify, ParsedUrlQueryInput } from 'querystring';
+import axios, { AxiosResponse } from 'axios';
+import axiosCookieJarSupport from 'axios-cookiejar-support';
+import { CookieJar } from 'tough-cookie';
 import { BaseClientConfig } from './types';
 
 /**
@@ -35,7 +35,10 @@ export class BaseClient {
    * @param url URL for request
    * @param payload Object to send to server.
    */
-  protected post<T extends ParsedUrlQueryInput, R>(url: string, payload: T) {
+  protected post<T extends ParsedUrlQueryInput, R>(
+    url: string,
+    payload: T,
+  ): Promise<AxiosResponse<R>> {
     return axios.post<R>(url, stringify(payload), this.config);
   }
 }

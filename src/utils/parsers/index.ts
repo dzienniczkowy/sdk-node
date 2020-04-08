@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
-import UnknownSymbolError from '../../errors/unknown-symbol';
 import InvalidCredentialsError from '../../errors/invalid-credentials';
+import UnknownSymbolError from '../../errors/unknown-symbol';
 
 /**
  * Parsing login respond to get users recently used region symbols.
@@ -17,7 +17,9 @@ export const parseLoginResponds = (html: string): string => {
     throw new Error(errorMessageText);
   }
 
-  return $('[name=hiddenform] [name=wresult]').attr('value');
+  const xml = $('[name=hiddenform] [name=wresult]').attr('value');
+  if (!xml) throw new Error('Can\'t find element "[name=hiddenform] [name=wresult]"');
+  return xml;
 };
 
 /**
@@ -25,7 +27,7 @@ export const parseLoginResponds = (html: string): string => {
  * @param xml
  * @returns Array of symbols.
  */
-export const parseSymbolsXml = (xml): string[] => {
+export const parseSymbolsXml = (xml: string): string[] => {
   const $ = cheerio.load(xml, {
     xmlMode: true,
   });
