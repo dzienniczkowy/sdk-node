@@ -1,6 +1,6 @@
 import qs from 'querystring';
+import format from 'date-fns/format';
 import startOfWeek from 'date-fns/startOfWeek';
-import format from 'date-fns/format'
 import { UserObject } from './interfaces/UserObject';
 import { TimetableParser } from './parsers/timetableParser';
 

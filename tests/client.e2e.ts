@@ -1,5 +1,7 @@
 import * as wulkanowy from '../src';
 
+jest.setTimeout(30000);
+
 describe('Client', () => {
   describe('Login method', () => {
     let client: wulkanowy.Client;

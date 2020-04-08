@@ -14,7 +14,7 @@ export class TimetableParser {
         const lessonHr = row[0].split('<br />');
         if (row[WDnum] !== '') {
           const lesson = this.parseCell(this.createEmptyTimetableLesson(), row[WDnum]);
-          const dateArray = (weekDay.Text.split('<br />')[1]).split('.').map(x => parseInt(x, 10));
+          const dateArray = (weekDay.Text.split('<br />')[1]).split('.').map((x) => parseInt(x, 10));
           timetable.push({
             ...lesson,
             date: new Date(Date.UTC(dateArray[2], dateArray[1] - 1, dateArray[0])),
@@ -119,7 +119,7 @@ export class TimetableParser {
     return lesson;
   }
 
-  private getLesson(lesson: TimetableLesson, spans, offset: number = 0): TimetableLesson {
+  private getLesson(lesson: TimetableLesson, spans, offset = 0): TimetableLesson {
     return {
       ...lesson,
       subject: this.getLessonAndGroupInfoFromSpan(spans.eq(0))[0],
@@ -132,7 +132,7 @@ export class TimetableParser {
     };
   }
 
-  private getLessonWithReplacement(lesson: TimetableLesson, spans, offset: number = 0):
+  private getLessonWithReplacement(lesson: TimetableLesson, spans, offset = 0):
   TimetableLesson {
     return {
       ...lesson,
