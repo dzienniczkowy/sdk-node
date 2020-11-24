@@ -1,13 +1,11 @@
 import qs from 'querystring';
+import axios, { AxiosInstance } from 'axios';
+import axiosCookieJarSupport from 'axios-cookiejar-support';
 import format from 'date-fns/format';
 import startOfWeek from 'date-fns/startOfWeek';
 import { CookieJar } from 'tough-cookie';
 import { UserObject } from './interfaces/user-object';
 import { TimetableParser } from './parsers/timetableParser';
-import { AxiosInstance } from 'axios';
-
-const axios = require('axios').default;
-const axiosCookieJarSupport = require('axios-cookiejar-support').default;
 
 export class Diary {
   private userObject: UserObject;
@@ -31,7 +29,7 @@ export class Diary {
   public getTimetable(date: Date): Promise<object> {
     return new Promise((resolve) => {
       this.api.post('http://uonetplus-uczen.fakelog.cf/powiatwulkanowy/123456/PlanZajec.mvc/Get', qs.stringify({ date: Diary.getWeekDateString(date) })).then((response) => {
-        if (response.data.success === true) {
+        if (response.data.success) {
           resolve(TimetableParser.parseTimetable(response.data.data));
         }
       });
