@@ -1,4 +1,5 @@
 import * as wulkanowy from '../src';
+import { UserObject } from '../src/diary/interfaces/user-object';
 
 jest.setTimeout(30000);
 
@@ -32,7 +33,7 @@ describe('Client', () => {
 
 describe('Diary', () => {
   let client: wulkanowy.Client;
-  let diaryList: any[];
+  let diaryList: UserObject[];
 
   beforeEach(async () => {
     client = new wulkanowy.Client('fakelog.cf');
