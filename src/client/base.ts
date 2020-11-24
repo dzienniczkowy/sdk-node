@@ -35,9 +35,9 @@ export class BaseClient {
    * @param url URL for request
    * @param payload Object to send to server.
    */
-  protected post<T extends ParsedUrlQueryInput, R>(
+  protected post<R>(
     url: string,
-    payload: T,
+    payload: ParsedUrlQueryInput = {},
   ): Promise<AxiosResponse<R>> {
     return axios.post<R>(url, stringify(payload), this.config);
   }
