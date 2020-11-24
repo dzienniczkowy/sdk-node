@@ -23,6 +23,16 @@
   "plugins": [
     "@typescript-eslint"
   ],
+  "overrides": [
+    {
+      "files": [
+        "tests/**"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.tests.json"
+      }
+    }
+  ],
   "rules": {
     "import/prefer-default-export": ["off"],
     "import/extensions": ["error", "never"],

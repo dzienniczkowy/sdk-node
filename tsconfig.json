@@ -3,17 +3,18 @@
     "target": "es5",
     "module": "commonjs",
     "declaration": true,
+    "sourceMap": true,
     "outDir": "dist",
-    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "types": [
-      "node",
-      "jest"
+      "node"
     ],
     "lib": [
       "es2019"
     ]
   },
-  "exclude": ["tests/**/*.e2e.ts", "dist"]
+  "include": [
+    "src"
+  ]
 }
