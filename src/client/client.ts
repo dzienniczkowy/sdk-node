@@ -15,7 +15,7 @@ export class Client extends BaseClient {
    */
   public symbol: string | undefined;
 
-  public urlList: string[];
+  public urlList: string[] | undefined;
 
   /**
    * API client for SDK constructor.
@@ -82,23 +82,24 @@ export class Client extends BaseClient {
   }
 
   public async getDiaryList(): Promise<any[]> {
-    const results = [];
-    this.urlList.forEach((url) => {
-      results.push(this.post(
-        `${url}UczenDziennik.mvc/Get`,
-        {},
-      ));
-    });
-    const responses = await Promise.all(results);
-    responses.forEach((response) => {
-      if (response.data.success === true) {
-        for (let i = 0; i < response.data.data.length; i += 1) {
-          response.data.data[i].url = response.config.url
-            .substring(0, response.config.url.length - 22);
-          response.data.data[i].host = this.host;
-        }
-      }
-    });
-    return [].concat(...responses.map((x) => x.data.data));
+    const results: any[] = [];
+    if (this.urlList) {
+      this.urlList.forEach((url) => {
+        results.push(this.post(
+          `${url}UczenDziennik.mvc/Get`,
+          {},
+        ));
+      });
+    }
+    let responses = await Promise.all(results);
+    responses = responses
+      .filter((response) => response.data.success === true)
+      .flatMap((response) => response.data.data.map((responseData: Record<string, any>) => ({
+        IdDziennik: responseData.IdDziennik,
+        IdUczen: responseData.IdUczen,
+        url: response.config.url.substring(0, response.config.url.length - 22),
+        host: this.host,
+      })));
+    return responses;
   }
 }

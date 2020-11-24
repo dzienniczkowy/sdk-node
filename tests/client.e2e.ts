@@ -30,10 +30,9 @@ describe('Client', () => {
   });
 });
 
-
 describe('Diary', () => {
   let client: wulkanowy.Client;
-  let diaryList;
+  let diaryList: any[];
 
   beforeEach(async () => {
     client = new wulkanowy.Client('fakelog.cf');

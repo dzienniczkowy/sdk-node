@@ -10,6 +10,10 @@
     "types": [
       "node",
       "jest"
+    ],
+    "lib": [
+      "es2019"
     ]
-  }
+  },
+  "exclude": ["tests/**/*.e2e.ts", "dist"]
 }

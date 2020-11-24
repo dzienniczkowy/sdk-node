@@ -1,4 +1,4 @@
-import { TimetableHeaders } from './TimetableHeaders';
+import { TimetableHeaders } from './timetable-headers';
 
 export interface TimetableResponse {
   Data: string;

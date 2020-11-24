@@ -1,44 +1,44 @@
 import qs from 'querystring';
 import format from 'date-fns/format';
 import startOfWeek from 'date-fns/startOfWeek';
-import { UserObject } from './interfaces/UserObject';
+import { CookieJar } from 'tough-cookie';
+import { UserObject } from './interfaces/user-object';
 import { TimetableParser } from './parsers/timetableParser';
+import { AxiosInstance } from 'axios';
 
 const axios = require('axios').default;
 const axiosCookieJarSupport = require('axios-cookiejar-support').default;
 
-let api;
-
 export class Diary {
   private userObject: UserObject;
 
-  private readonly cookieJar;
+  private readonly cookieJar: CookieJar;
 
-  public constructor(userObject: UserObject, cookieJar) {
+  private api: AxiosInstance;
+
+  public constructor(userObject: UserObject, cookieJar: CookieJar) {
     this.cookieJar = cookieJar;
     this.userObject = userObject;
     this.cookieJar.setCookie(`idBiezacyDziennik=${this.userObject.IdDziennik}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
     this.cookieJar.setCookie(`idBiezacyUczen=${this.userObject.IdUczen}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
-    api = axios.create({
+    this.api = axios.create({
       baseURL: userObject.url,
       headers: { jar: this.cookieJar },
     });
-    axiosCookieJarSupport(api);
+    axiosCookieJarSupport(this.api);
   }
 
   public getTimetable(date: Date): Promise<object> {
-    console.log(this.getWeekDateString(date));
     return new Promise((resolve) => {
-      api.post('http://uonetplus-uczen.fakelog.cf/powiatwulkanowy/123456/PlanZajec.mvc/Get', qs.stringify({ date: this.getWeekDateString(date) })).then((response) => {
+      this.api.post('http://uonetplus-uczen.fakelog.cf/powiatwulkanowy/123456/PlanZajec.mvc/Get', qs.stringify({ date: Diary.getWeekDateString(date) })).then((response) => {
         if (response.data.success === true) {
-          const parser = new TimetableParser();
-          resolve(parser.parseTimetable(response.data.data));
+          resolve(TimetableParser.parseTimetable(response.data.data));
         }
       });
     });
   }
 
-  private getWeekDateString(date: Date): string {
+  private static getWeekDateString(date: Date): string {
     return format(startOfWeek(date, { weekStartsOn: 1 }), "yyyy-MM-dd'T'HH:mm:ss");
   }
 }

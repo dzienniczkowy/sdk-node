@@ -5,4 +5,9 @@ module.exports = {
     '(/__tests__/.*|(\\.|/)(e2e|unit))\\.tsx?$',
     '(/tests/.*|(\\.|/)(e2e|unit))\\.tsx?$',
   ],
+  globals: {
+    'ts-jest': {
+      isolatedModules: true,
+    },
+  },
 };
