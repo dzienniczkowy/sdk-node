@@ -14,6 +14,11 @@ export class Diary {
 
   private api: AxiosInstance;
 
+  /**
+   * Api diary for SDK constructor.
+   * @param userObject Selected diary from diary list.
+   * @param cookieJar Client's cookie jar.
+   */
   public constructor(userObject: UserObject, cookieJar: CookieJar) {
     this.cookieJar = cookieJar;
     this.userObject = userObject;
@@ -26,6 +31,11 @@ export class Diary {
     axiosCookieJarSupport(this.api);
   }
 
+  /**
+   * Represents timetable.
+   * @param date Selected diary from diary list.
+   * @resolve Timetable object.
+   */
   public getTimetable(date: Date): Promise<object> {
     return new Promise((resolve) => {
       this.api.post('http://uonetplus-uczen.fakelog.cf/powiatwulkanowy/123456/PlanZajec.mvc/Get', qs.stringify({ date: Diary.getWeekDateString(date) })).then((response) => {
