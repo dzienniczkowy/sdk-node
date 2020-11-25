@@ -5,7 +5,7 @@ import { UserObject } from '../diary/interfaces/user-object';
 import NoUrlListError from '../errors/no-url-list';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
-  checkUserSignUrl, loginUrl, parseLoginResponds, parseSymbolsXml,
+  checkUserSignUrl, loginUrl, notNil, parseLoginResponds, parseSymbolsXml,
 } from '../utils';
 import { BaseClient } from './base';
 import { DefaultAjaxPostPayload } from './types';
@@ -83,7 +83,7 @@ export class Client extends BaseClient {
     this.urlList = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]')
       .toArray()
       .map((element) => $(element).attr('href'))
-      .filter((value): value is string => value !== undefined);
+      .filter(notNil);
   }
 
   public async getDiaryList(): Promise<UserObject[]> {
