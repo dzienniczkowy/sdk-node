@@ -1,36 +1,36 @@
 import * as cheerio from 'cheerio';
+import { formatISO } from 'date-fns';
+import { notNil } from '../../utils';
 import { TimetableLesson } from '../interfaces/timetable/timetable-lesson';
 import { TimetableResponse } from '../interfaces/timetable/timetable-response';
 
 export class TimetableParser {
   public static parseTimetable(htmlResponse: TimetableResponse): TimetableLesson[] {
-    const timetable: TimetableLesson[] = [];
-    const weekDays = htmlResponse.Headers;
-    weekDays.shift();
-    let WDnum = 0;
-    weekDays.forEach((weekDay) => {
-      WDnum += 1;
-      htmlResponse.Rows.forEach((row) => {
-        const lessonHr = row[0].split('<br />');
-        if (row[WDnum] !== '') {
+    const weekDays = htmlResponse.Headers.slice(1);
+    return weekDays.flatMap(
+      (weekDay, weekDayIndex) => htmlResponse.Rows
+        .map((row) => {
+          const [number, start, end] = row[0].split('<br />');
+          const cell = row[weekDayIndex + 1];
+          if (cell === '') return null;
           const lesson = TimetableParser.parseCell(
             TimetableParser.createEmptyTimetableLesson(),
-            row[WDnum],
+            cell,
           );
-          const dateArray = (weekDay.Text.split('<br />')[1]).split('.').map((x) => parseInt(x, 10));
-          if (lesson) {
-            timetable.push({
-              ...lesson,
-              date: new Date(Date.UTC(dateArray[2], dateArray[1] - 1, dateArray[0])),
-              number: parseInt(lessonHr[0], 10),
-              start: lessonHr[1],
-              end: lessonHr[2],
-            });
-          }
-        }
-      });
-    });
-    return timetable;
+          if (!lesson) return null;
+          const [day, month, year] = weekDay.Text.split('<br />')[1]
+            .split('.')
+            .map((x) => parseInt(x, 10));
+          return {
+            ...lesson,
+            date: formatISO(Date.UTC(year, month - 1, day), { representation: 'date' }),
+            number: parseInt(number, 10),
+            start,
+            end,
+          };
+        })
+        .filter(notNil),
+    );
   }
 
   private static parseCell(lesson: TimetableLesson, cell: string): TimetableLesson | null {
