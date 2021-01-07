@@ -9,8 +9,9 @@ node_modules/
 # Distribution folder
 dist/
 
-# VSCode settings
+# Editors
 .vscode
+.idea
 
 # Code coverage
 coverage
