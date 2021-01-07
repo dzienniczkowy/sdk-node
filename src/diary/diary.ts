@@ -25,7 +25,7 @@ export class Diary {
     this.cookieJar.setCookie(`idBiezacyDziennik=${this.userObject.IdDziennik}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
     this.cookieJar.setCookie(`idBiezacyUczen=${this.userObject.IdUczen}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
     this.api = axios.create({
-      baseURL: userObject.url,
+      baseURL: userObject.baseUrl,
       headers: { jar: this.cookieJar },
     });
     axiosCookieJarSupport(this.api);

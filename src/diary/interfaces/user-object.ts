@@ -1,6 +1,6 @@
 export interface UserObject {
   IdDziennik: number;
   IdUczen: number;
-  url: string;
+  baseUrl: string;
   host: string;
 }

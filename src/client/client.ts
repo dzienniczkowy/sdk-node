@@ -88,18 +88,18 @@ export class Client extends BaseClient {
 
   public async getDiaryList(): Promise<UserObject[]> {
     if (this.urlList === undefined) throw new NoUrlListError();
-    const results = await Promise.all(this.urlList.map(async (studentUrl) => {
-      const url = new URL('UczenDziennik.mvc/Get', studentUrl).toString();
+    const results = await Promise.all(this.urlList.map(async (baseUrl) => {
+      const url = new URL('UczenDziennik.mvc/Get', baseUrl).toString();
       return {
-        url,
+        baseUrl,
         response: await this.post<DiaryListResponse>(url),
       };
     }));
     return results.filter(({ response }) => response.data.success)
-      .flatMap(({ response, url }) => response.data.data.map((diary) => ({
+      .flatMap(({ response, baseUrl }) => response.data.data.map((diary) => ({
         IdDziennik: diary.IdDziennik,
         IdUczen: diary.IdUczen,
-        url,
+        baseUrl,
         host: this.host,
       })));
   }
