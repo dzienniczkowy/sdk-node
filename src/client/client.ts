@@ -1,11 +1,10 @@
-import { URL } from 'url';
 import cheerio from 'cheerio';
 import { DiaryListResponse } from '../diary/interfaces/diary-response';
 import { UserObject } from '../diary/interfaces/user-object';
 import NoUrlListError from '../errors/no-url-list';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
-  checkUserSignUrl, loginUrl, notNil, parseLoginResponds, parseSymbolsXml,
+  checkUserSignUrl, joinUrl, loginUrl, notNil, parseLoginResponds, parseSymbolsXml,
 } from '../utils';
 import { BaseClient } from './base';
 import { DefaultAjaxPostPayload } from './types';
@@ -89,7 +88,7 @@ export class Client extends BaseClient {
   public async getDiaryList(): Promise<UserObject[]> {
     if (this.urlList === undefined) throw new NoUrlListError();
     const results = await Promise.all(this.urlList.map(async (baseUrl) => {
-      const url = new URL('UczenDziennik.mvc/Get', baseUrl).toString();
+      const url = joinUrl(baseUrl, 'UczenDziennik.mvc/Get').toString();
       return {
         baseUrl,
         response: await this.post<DiaryListResponse>(url),
