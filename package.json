@@ -24,6 +24,7 @@
     "@types/cheerio": "^0.22.17",
     "@types/jest": "^25.1.4",
     "@types/node": "^11.15.7",
+    "@types/tough-cookie": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
     "eslint": "^6.8.0",
@@ -34,8 +35,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@types/tough-cookie": "^4.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "axios-cookiejar-support": "^1.0.1",
     "cheerio": "^1.0.0-rc.3",
     "date-fns": "^2.11.1",
