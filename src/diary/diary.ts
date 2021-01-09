@@ -42,7 +42,7 @@ export class Diary {
    */
   public async getTimetable(date: Date): Promise<TimetableLesson[]> {
     const response = await this.api.post<Response<TimetableData>>(
-      'http://uonetplus-uczen.fakelog.cf/powiatwulkanowy/123456/PlanZajec.mvc/Get',
+      'PlanZajec.mvc/Get',
       qs.stringify({ date: Diary.getWeekDateString(date) }),
     );
     const data = handleResponse(response);
