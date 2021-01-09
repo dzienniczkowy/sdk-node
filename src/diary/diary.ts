@@ -1,10 +1,9 @@
 import qs from 'querystring';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
 import format from 'date-fns/format';
 import startOfWeek from 'date-fns/startOfWeek';
 import { CookieJar } from 'tough-cookie';
-import RequestFailedError from '../errors/request-not-successful';
 import { handleResponse } from '../utils';
 import { Response } from './interfaces/response';
 import { TimetableData } from './interfaces/timetable/timetable-data';
