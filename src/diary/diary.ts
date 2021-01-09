@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
 import format from 'date-fns/format';
 import startOfWeek from 'date-fns/startOfWeek';
@@ -75,17 +75,25 @@ export class Diary {
     await this.cookieJar.setCookie(`idBiezacyDziennikPrzedszkole=0; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
   }
 
+  private async postAndHandle<T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    const response = await this.api.post<Response<T>>(url, data, config);
+    return handleResponse(response);
+  }
+
   /**
    * Represents timetable.
    * @param date Selected diary from diary list.
    * @resolve Timetable object.
    */
   public async getTimetable(date: Date): Promise<Timetable> {
-    const response = await this.api.post<Response<TimetableData>>(
+    const data = await this.postAndHandle<TimetableData>(
       'PlanZajec.mvc/Get',
       { data: Diary.getWeekDateString(date) },
     );
-    const data = handleResponse(response);
     return {
       lessons: parseTimetable(data),
     };
@@ -96,11 +104,10 @@ export class Diary {
    * @param semesterId Semester id
    */
   public async getGradeDetails(semesterId: number): Promise<Grades> {
-    const response = await this.api.post<Response<GradeData>>(
+    const data = await this.postAndHandle<GradeData>(
       'Oceny.mvc/Get',
       { okres: semesterId },
     );
-    const data = handleResponse(response);
     return mapGrades(data);
   }
 
