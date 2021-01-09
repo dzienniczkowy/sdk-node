@@ -8,11 +8,6 @@ export type BaseClientConfig = {
   };
 };
 
-export type LoginPostParams = {
-  LoginName: string;
-  Password: string;
-};
-
 export type DefaultAjaxPostPayload = {
   wa: 'wsignin1.0';
   wresult: string;

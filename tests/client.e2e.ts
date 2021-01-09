@@ -1,4 +1,5 @@
 import * as wulkanowy from '../src';
+import { UserObject } from '../src/diary/interfaces/user-object';
 
 jest.setTimeout(30000);
 
@@ -14,6 +15,10 @@ describe('Client', () => {
       // TODO: Logout
     });
 
+    it('Ger user list before logging in', () => expect(
+      client.getDiaryList(),
+    ).rejects.toHaveProperty('name', 'NoUrlListError'));
+
     it('Login to fakelog account', () => expect(
       client.login('jan@fakelog.cf', 'jan123'),
     ).resolves.toEqual('powiatwulkanowy'));
@@ -21,5 +26,31 @@ describe('Client', () => {
     it('Throws error if login credentials are invalid', () => expect(
       client.login('jan@fakelog.cf', 'invalid-password'),
     ).rejects.toHaveProperty('name', 'InvalidCredentialsError'));
+
+    it('Get user list', async () => {
+      await client.login('jan@fakelog.cf', 'jan123');
+      const diaryList = await client.getDiaryList();
+      expect(diaryList[0].host).toEqual('fakelog.cf');
+    });
+  });
+});
+
+describe('Diary', () => {
+  let client: wulkanowy.Client;
+  let diaryList: UserObject[];
+
+  beforeEach(async () => {
+    client = new wulkanowy.Client('fakelog.cf');
+    await client.login('jan@fakelog.cf', 'jan123');
+    diaryList = await client.getDiaryList();
+  });
+
+  afterEach(() => {
+    // TODO: Logout
+  });
+
+  it('Get timetable', async () => {
+    const diary = await wulkanowy.Diary.create(diaryList[0], client.cookieJar);
+    await diary.getTimetable(new Date(Date.UTC(2020, 2, 23)));
   });
 });

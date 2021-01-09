@@ -1,10 +1,20 @@
 import cheerio from 'cheerio';
+import { DiaryListData } from '../diary/interfaces/diary-data';
+import { Response } from '../diary/interfaces/response';
+import { UserObject } from '../diary/interfaces/user-object';
+import NoUrlListError from '../errors/no-url-list';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
-  checkUserSignUrl, loginUrl, parseLoginResponds, parseSymbolsXml,
+  checkUserSignUrl,
+  handleResponse,
+  joinUrl,
+  loginUrl,
+  notNil,
+  parseLoginResponds,
+  parseSymbolsXml,
 } from '../utils';
 import { BaseClient } from './base';
-import { DefaultAjaxPostPayload, LoginPostParams } from './types';
+import { DefaultAjaxPostPayload } from './types';
 
 /**
  * API client for SDK.
@@ -14,6 +24,8 @@ export class Client extends BaseClient {
    * User region login sign.
    */
   public symbol: string | undefined;
+
+  public urlList: string[] | undefined;
 
   /**
    * API client for SDK constructor.
@@ -33,7 +45,7 @@ export class Client extends BaseClient {
    * @resolve Region symbol for user.
    */
   public async login(username: string, password: string): Promise<string> {
-    const response = await this.post<LoginPostParams, string>(
+    const response = await this.post<string>(
       loginUrl(this.host),
       {
         LoginName: username,
@@ -47,21 +59,21 @@ export class Client extends BaseClient {
 
     await Promise.all(symbols.map(async (symbol) => {
       const currentUrl = checkUserSignUrl(this.host, symbol);
-      const { data } = await this.post<DefaultAjaxPostPayload, string>(
+      const payload: DefaultAjaxPostPayload = {
+        wa: 'wsignin1.0',
+        wresult: xml,
+        wctx: currentUrl,
+      };
+      const { data } = await this.post<string>(
         currentUrl,
-        {
-          wa: 'wsignin1.0',
-          wresult: xml,
-          wctx: currentUrl,
-        },
+        payload,
       );
 
-      if (data.includes('appLink')) {
+      if (data.includes('newAppLink')) {
         this.initClient(data, symbol);
       }
     }));
 
-    // TODO: Remove type assertion
     if (!this.symbol) throw new UnknownSymbolError();
     return this.symbol;
   }
@@ -74,8 +86,27 @@ export class Client extends BaseClient {
   private initClient(mainResponse: string, symbol: string): void {
     this.symbol = symbol;
     const $ = cheerio.load(mainResponse);
-    const links: string[] = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]').map(
-      (index, value) => $(value).attr('href'),
-    ).get();
+    this.urlList = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]')
+      .toArray()
+      .map((element) => $(element).attr('href'))
+      .filter(notNil);
+  }
+
+  public async getDiaryList(): Promise<UserObject[]> {
+    if (this.urlList === undefined) throw new NoUrlListError();
+    const results = await Promise.all(this.urlList.map(async (baseUrl) => {
+      const url = joinUrl(baseUrl, 'UczenDziennik.mvc/Get').toString();
+      return {
+        baseUrl,
+        data: handleResponse(await this.post<Response<DiaryListData>>(url)),
+      };
+    }));
+    return results.flatMap(({ data, baseUrl }) => data.map((diary) => ({
+      diaryId: diary.IdDziennik,
+      studentId: diary.IdUczen,
+      schoolYear: diary.DziennikRokSzkolny,
+      baseUrl,
+      host: this.host,
+    })));
   }
 }

@@ -3,13 +3,19 @@
     "target": "es5",
     "module": "commonjs",
     "declaration": true,
+    "sourceMap": true,
     "outDir": "dist",
-    "rootDir": "./",
     "strict": true,
     "esModuleInterop": true,
     "types": [
       "node",
       "jest"
+    ],
+    "lib": [
+      "es2019"
     ]
-  }
+  },
+  "include": [
+    "src"
+  ]
 }
