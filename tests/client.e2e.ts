@@ -15,6 +15,10 @@ describe('Client', () => {
       // TODO: Logout
     });
 
+    it('Ger user list before logging in', () => expect(
+      client.getDiaryList(),
+    ).rejects.toHaveProperty('name', 'NoUrlListError'));
+
     it('Login to fakelog account', () => expect(
       client.login('jan@fakelog.cf', 'jan123'),
     ).resolves.toEqual('powiatwulkanowy'));
