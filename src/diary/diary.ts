@@ -93,12 +93,12 @@ export class Diary {
 
   /**
    * Returns information about student's grades
-   * @param semester Semester id
+   * @param semesterId Semester id
    */
-  public async getGradeDetails(semester: number): Promise<Grades> {
+  public async getGradeDetails(semesterId: number): Promise<Grades> {
     const response = await this.api.post<Response<GradeData>>(
       'Oceny.mvc/Get',
-      { okres: semester },
+      { okres: semesterId },
     );
     const data = handleResponse(response);
     return mapGrades(data);
