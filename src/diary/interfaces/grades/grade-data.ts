@@ -1,7 +1,7 @@
 export interface GradeDataPartial {
   DataOceny: string;
-  KodKolumny: string | null;
-  NazwaKolumny: string | null;
+  KodKolumny: string;
+  NazwaKolumny: string;
   KolorOceny: number;
   Nauczyciel: string;
   Waga: number;
@@ -9,11 +9,11 @@ export interface GradeDataPartial {
 }
 
 export interface GradeDataSubject {
-  OcenaRoczna: string | null;
+  OcenaRoczna: string;
   OcenaRocznaPunkty: string | null;
   OcenyCzastkowe: GradeDataPartial[]; // TODO: Add type
   Pozycja: number;
-  ProponowanaOcenaRoczna: string | null;
+  ProponowanaOcenaRoczna: string;
   ProponowanaOcenaRocznaPunkty: string | null;
   Przedmiot: string;
   Srednia: number;
