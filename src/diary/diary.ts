@@ -25,16 +25,20 @@ export class Diary {
   public constructor(userObject: UserObject, cookieJar: CookieJar) {
     this.cookieJar = cookieJar;
     this.userObject = userObject;
-    this.cookieJar.setCookie(`idBiezacyDziennik=${this.userObject.diaryId}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
-    this.cookieJar.setCookie(`idBiezacyUczen=${this.userObject.studentId}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
-    this.cookieJar.setCookie(`biezacyRokSzkolny=${this.userObject.schoolYear}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
-    this.cookieJar.setCookie(`idBiezacyDziennikPrzedszkole=0; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
+    this.setCookies();
     this.api = axios.create({
       baseURL: userObject.baseUrl,
       withCredentials: true,
       jar: this.cookieJar,
     });
     axiosCookieJarSupport(this.api);
+  }
+
+  private async setCookies(): Promise<void> {
+    await this.cookieJar.setCookie(`idBiezacyDziennik=${this.userObject.diaryId}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`);
+    await this.cookieJar.setCookie(`idBiezacyUczen=${this.userObject.studentId}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`);
+    await this.cookieJar.setCookie(`biezacyRokSzkolny=${this.userObject.schoolYear}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`);
+    await this.cookieJar.setCookie(`idBiezacyDziennikPrzedszkole=0; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`);
   }
 
   /**
