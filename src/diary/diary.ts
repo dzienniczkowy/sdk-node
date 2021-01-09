@@ -19,19 +19,30 @@ export class Diary {
 
   /**
    * Api diary for SDK constructor.
+   * Not supposed to be called directly
    * @param userObject Selected diary from diary list.
    * @param cookieJar Client's cookie jar.
    */
-  public constructor(userObject: UserObject, cookieJar: CookieJar) {
+  private constructor(userObject: UserObject, cookieJar: CookieJar) {
     this.cookieJar = cookieJar;
     this.userObject = userObject;
-    this.setCookies();
     this.api = axios.create({
       baseURL: userObject.baseUrl,
       withCredentials: true,
       jar: this.cookieJar,
     });
     axiosCookieJarSupport(this.api);
+  }
+
+  /**
+   * Creates a Diary class instance.
+   * @param userObject Selected diary from diary list.
+   * @param cookieJar Client's cookie jar.
+   */
+  public static async create(userObject: UserObject, cookieJar: CookieJar): Promise<Diary> {
+    const diary = new Diary(userObject, cookieJar);
+    await diary.setCookies();
+    return diary;
   }
 
   private async setCookies(): Promise<void> {
