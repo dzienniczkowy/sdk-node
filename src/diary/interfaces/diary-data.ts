@@ -1,5 +1,5 @@
 // Partial
-export interface DiaryResponseSemester {
+export interface DiaryDataSemester {
   NumerOkresu: number;
   Poziom: number;
   DataOd: string;
@@ -10,7 +10,7 @@ export interface DiaryResponseSemester {
   Id: number;
 }
 
-export interface DiaryResponse {
+export interface DiaryDataItem {
   Id: number;
   IdUczen: number;
   UczenImie: string;
@@ -23,11 +23,8 @@ export interface DiaryResponse {
   Symbol: string;
   Nazwa?: string;
   DziennikRokSzkolny: number;
-  Okresy: DiaryResponseSemester[];
+  Okresy: DiaryDataSemester[];
   UczenPelnaNazwa: string;
 }
 
-export interface DiaryListResponse {
-  data: DiaryResponse[];
-  success: boolean;
-}
+export type DiaryListData = DiaryDataItem[];

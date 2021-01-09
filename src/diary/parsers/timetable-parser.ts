@@ -1,8 +1,8 @@
 import * as cheerio from 'cheerio';
 import { formatISO } from 'date-fns';
 import { notNil } from '../../utils';
+import { TimetableData } from '../interfaces/timetable/timetable-data';
 import { TimetableLesson, TimetableLessonInfo } from '../interfaces/timetable/timetable-lesson';
-import { TimetableResponse } from '../interfaces/timetable/timetable-response';
 
 function parseCell(cell: string): TimetableLessonInfo | null {
   const $ = cheerio.load(cell);
@@ -162,7 +162,7 @@ function capitalizeString(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export function parseTimetable(htmlResponse: TimetableResponse): TimetableLesson[] {
+export function parseTimetable(htmlResponse: TimetableData): TimetableLesson[] {
   const weekDays = htmlResponse.Headers.slice(1);
   return weekDays.flatMap(
     (weekDay, weekDayIndex) => htmlResponse.Rows

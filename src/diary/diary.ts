@@ -1,9 +1,14 @@
 import qs from 'querystring';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
 import format from 'date-fns/format';
 import startOfWeek from 'date-fns/startOfWeek';
 import { CookieJar } from 'tough-cookie';
+import RequestFailedError from '../errors/request-not-successful';
+import { handleResponse } from '../utils';
+import { Response } from './interfaces/response';
+import { TimetableData } from './interfaces/timetable/timetable-data';
+import { TimetableLesson } from './interfaces/timetable/timetable-lesson';
 import { UserObject } from './interfaces/user-object';
 import { parseTimetable } from './parsers/timetable-parser';
 
@@ -36,14 +41,13 @@ export class Diary {
    * @param date Selected diary from diary list.
    * @resolve Timetable object.
    */
-  public getTimetable(date: Date): Promise<object> {
-    return new Promise((resolve) => {
-      this.api.post('http://uonetplus-uczen.fakelog.cf/powiatwulkanowy/123456/PlanZajec.mvc/Get', qs.stringify({ date: Diary.getWeekDateString(date) })).then((response) => {
-        if (response.data.success) {
-          resolve(parseTimetable(response.data.data));
-        }
-      });
-    });
+  public async getTimetable(date: Date): Promise<TimetableLesson[]> {
+    const response = await this.api.post<Response<TimetableData>>(
+      'http://uonetplus-uczen.fakelog.cf/powiatwulkanowy/123456/PlanZajec.mvc/Get',
+      qs.stringify({ date: Diary.getWeekDateString(date) }),
+    );
+    const data = handleResponse(response);
+    return parseTimetable(data);
   }
 
   private static getWeekDateString(date: Date): string {

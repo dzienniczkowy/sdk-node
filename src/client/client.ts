@@ -1,10 +1,11 @@
 import cheerio from 'cheerio';
-import { DiaryListResponse } from '../diary/interfaces/diary-response';
+import { DiaryListData } from '../diary/interfaces/diary-data';
+import { Response } from '../diary/interfaces/response';
 import { UserObject } from '../diary/interfaces/user-object';
 import NoUrlListError from '../errors/no-url-list';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
-  checkUserSignUrl, joinUrl, loginUrl, notNil, parseLoginResponds, parseSymbolsXml,
+  checkUserSignUrl, handleResponse, joinUrl, loginUrl, notNil, parseLoginResponds, parseSymbolsXml,
 } from '../utils';
 import { BaseClient } from './base';
 import { DefaultAjaxPostPayload } from './types';
@@ -91,15 +92,14 @@ export class Client extends BaseClient {
       const url = joinUrl(baseUrl, 'UczenDziennik.mvc/Get').toString();
       return {
         baseUrl,
-        response: await this.post<DiaryListResponse>(url),
+        data: handleResponse(await this.post<Response<DiaryListData>>(url)),
       };
     }));
-    return results.filter(({ response }) => response.data.success)
-      .flatMap(({ response, baseUrl }) => response.data.data.map((diary) => ({
-        IdDziennik: diary.IdDziennik,
-        IdUczen: diary.IdUczen,
-        baseUrl,
-        host: this.host,
-      })));
+    return results.flatMap(({ data, baseUrl }) => data.map((diary) => ({
+      IdDziennik: diary.IdDziennik,
+      IdUczen: diary.IdUczen,
+      baseUrl,
+      host: this.host,
+    })));
   }
 }
