@@ -1,6 +1,5 @@
 import * as cheerio from 'cheerio';
-import { formatISO } from 'date-fns';
-import { notNil } from '../../utils';
+import { notNil, toISODate } from '../../utils';
 import { TimetableData } from '../interfaces/timetable/timetable-data';
 import { TimetableLesson, TimetableLessonInfo } from '../interfaces/timetable/timetable-lesson';
 
@@ -172,12 +171,9 @@ export function parseTimetable(htmlResponse: TimetableData): TimetableLesson[] {
         if (cell === '') return null;
         const lesson = parseCell(cell);
         if (!lesson) return null;
-        const [day, month, year] = weekDay.Text.split('<br />')[1]
-          .split('.')
-          .map((x) => parseInt(x, 10));
         return {
           ...lesson,
-          date: formatISO(Date.UTC(year, month - 1, day), { representation: 'date' }),
+          date: toISODate(weekDay.Text.split('<br />')[1]),
           number: parseInt(number, 10),
           start,
           end,

@@ -21,7 +21,7 @@ export interface DiaryDataItem {
   IdPrzedszkoleDziennik: number;
   Poziom: number;
   Symbol: string;
-  Nazwa?: string;
+  Nazwa: string | null;
   DziennikRokSzkolny: number;
   Okresy: DiaryDataSemester[];
   UczenPelnaNazwa: string;

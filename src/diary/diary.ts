@@ -4,10 +4,13 @@ import format from 'date-fns/format';
 import startOfWeek from 'date-fns/startOfWeek';
 import { CookieJar } from 'tough-cookie';
 import { handleResponse } from '../utils';
+import { GradeData } from './interfaces/grades/grade-data';
+import { Grades } from './interfaces/grades/grades';
 import { Response } from './interfaces/response';
 import { Timetable } from './interfaces/timetable/timetable';
 import { TimetableData } from './interfaces/timetable/timetable-data';
 import { UserObject } from './interfaces/user-object';
+import { mapGrades } from './mappers/grade-details';
 import { parseTimetable } from './parsers/timetable-parser';
 
 export class Diary {
@@ -66,6 +69,19 @@ export class Diary {
     return {
       lessons: parseTimetable(data),
     };
+  }
+
+  /**
+   * Returns information about student's grades
+   * @param semester Semester id
+   */
+  public async getGradeDetails(semester: number): Promise<Grades> {
+    const response = await this.api.post<Response<GradeData>>(
+      'Oceny.mvc/Get',
+      { okres: semester },
+    );
+    const data = handleResponse(response);
+    return mapGrades(data);
   }
 
   private static getWeekDateString(date: Date): string {
