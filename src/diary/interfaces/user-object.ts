@@ -1,7 +1,9 @@
+import { Diary } from '../diary';
+import { DiaryInfo } from './diary/diary-info';
+
 export interface UserObject {
-  diaryId: number;
-  studentId: number;
-  schoolYear: number;
+  info: DiaryInfo;
   baseUrl: string;
   host: string;
+  createDiary: () => Promise<Diary>;
 }

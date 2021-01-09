@@ -50,7 +50,7 @@ describe('Diary', () => {
   });
 
   it('Get timetable', async () => {
-    const diary = await wulkanowy.Diary.create(diaryList[0], client.cookieJar);
+    const diary = await diaryList[0].createDiary();
     await diary.getTimetable(new Date(Date.UTC(2020, 2, 23)));
   });
 });
