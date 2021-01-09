@@ -5,7 +5,7 @@ import format from 'date-fns/format';
 import startOfWeek from 'date-fns/startOfWeek';
 import { CookieJar } from 'tough-cookie';
 import { UserObject } from './interfaces/user-object';
-import { TimetableParser } from './parsers/timetableParser';
+import { parseTimetable } from './parsers/timetable-parser';
 
 export class Diary {
   private userObject: UserObject;
@@ -40,7 +40,7 @@ export class Diary {
     return new Promise((resolve) => {
       this.api.post('http://uonetplus-uczen.fakelog.cf/powiatwulkanowy/123456/PlanZajec.mvc/Get', qs.stringify({ date: Diary.getWeekDateString(date) })).then((response) => {
         if (response.data.success) {
-          resolve(TimetableParser.parseTimetable(response.data.data));
+          resolve(parseTimetable(response.data.data));
         }
       });
     });
