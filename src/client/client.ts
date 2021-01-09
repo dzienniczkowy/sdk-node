@@ -102,8 +102,9 @@ export class Client extends BaseClient {
       };
     }));
     return results.flatMap(({ data, baseUrl }) => data.map((diary) => ({
-      IdDziennik: diary.IdDziennik,
-      IdUczen: diary.IdUczen,
+      diaryId: diary.IdDziennik,
+      studentId: diary.IdUczen,
+      schoolYear: diary.DziennikRokSzkolny,
       baseUrl,
       host: this.host,
     })));

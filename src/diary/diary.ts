@@ -1,4 +1,3 @@
-import qs from 'querystring';
 import axios, { AxiosInstance } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
 import format from 'date-fns/format';
@@ -26,11 +25,14 @@ export class Diary {
   public constructor(userObject: UserObject, cookieJar: CookieJar) {
     this.cookieJar = cookieJar;
     this.userObject = userObject;
-    this.cookieJar.setCookie(`idBiezacyDziennik=${this.userObject.IdDziennik}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
-    this.cookieJar.setCookie(`idBiezacyUczen=${this.userObject.IdUczen}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
+    this.cookieJar.setCookie(`idBiezacyDziennik=${this.userObject.diaryId}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
+    this.cookieJar.setCookie(`idBiezacyUczen=${this.userObject.studentId}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
+    this.cookieJar.setCookie(`biezacyRokSzkolny=${this.userObject.schoolYear}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
+    this.cookieJar.setCookie(`idBiezacyDziennikPrzedszkole=0; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`, () => {});
     this.api = axios.create({
       baseURL: userObject.baseUrl,
-      headers: { jar: this.cookieJar },
+      withCredentials: true,
+      jar: this.cookieJar,
     });
     axiosCookieJarSupport(this.api);
   }
@@ -43,7 +45,7 @@ export class Diary {
   public async getTimetable(date: Date): Promise<Timetable> {
     const response = await this.api.post<Response<TimetableData>>(
       'PlanZajec.mvc/Get',
-      qs.stringify({ date: Diary.getWeekDateString(date) }),
+      { data: Diary.getWeekDateString(date) },
     );
     const data = handleResponse(response);
     return {

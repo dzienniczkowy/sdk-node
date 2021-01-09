@@ -1,5 +1,5 @@
-import { stringify, ParsedUrlQueryInput } from 'querystring';
-import axios, { AxiosResponse } from 'axios';
+import { ParsedUrlQueryInput, stringify } from 'querystring';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import { BaseClientConfig } from './types';
@@ -9,7 +9,6 @@ import { BaseClientConfig } from './types';
  */
 export class BaseClient {
   public constructor() {
-    axiosCookieJarSupport(axios);
     this.cookieJar = new CookieJar();
     this.config = {
       jar: this.cookieJar,
@@ -18,7 +17,11 @@ export class BaseClient {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
     };
+    this.api = axios.create();
+    axiosCookieJarSupport(this.api);
   }
+
+  private api: AxiosInstance;
 
   /**
    * Cookie jar client object.
@@ -39,6 +42,6 @@ export class BaseClient {
     url: string,
     payload: ParsedUrlQueryInput = {},
   ): Promise<AxiosResponse<R>> {
-    return axios.post<R>(url, stringify(payload), this.config);
+    return this.api.post<R>(url, stringify(payload), this.config);
   }
 }
