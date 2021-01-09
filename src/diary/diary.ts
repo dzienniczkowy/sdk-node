@@ -6,8 +6,8 @@ import startOfWeek from 'date-fns/startOfWeek';
 import { CookieJar } from 'tough-cookie';
 import { handleResponse } from '../utils';
 import { Response } from './interfaces/response';
+import { Timetable } from './interfaces/timetable/timetable';
 import { TimetableData } from './interfaces/timetable/timetable-data';
-import { TimetableLesson } from './interfaces/timetable/timetable-lesson';
 import { UserObject } from './interfaces/user-object';
 import { parseTimetable } from './parsers/timetable-parser';
 
@@ -40,13 +40,15 @@ export class Diary {
    * @param date Selected diary from diary list.
    * @resolve Timetable object.
    */
-  public async getTimetable(date: Date): Promise<TimetableLesson[]> {
+  public async getTimetable(date: Date): Promise<Timetable> {
     const response = await this.api.post<Response<TimetableData>>(
       'PlanZajec.mvc/Get',
       qs.stringify({ date: Diary.getWeekDateString(date) }),
     );
     const data = handleResponse(response);
-    return parseTimetable(data);
+    return {
+      lessons: parseTimetable(data),
+    };
   }
 
   private static getWeekDateString(date: Date): string {
