@@ -1,4 +1,5 @@
 import cheerio from 'cheerio';
+import { formatISO } from 'date-fns';
 import InvalidCredentialsError from '../../errors/invalid-credentials';
 import UnknownSymbolError from '../../errors/unknown-symbol';
 
@@ -44,3 +45,14 @@ export const parseSymbolsXml = (xml: string): string[] => {
 
   return symbols;
 };
+
+/**
+ * @param date Date from API (D.M.YY)
+ * @returns ISO 8601 date string (YYYY-MM-DD)
+ */
+export function toISODate(date: string): string {
+  const [day, month, year] = date
+    .split('.')
+    .map((x) => parseInt(x, 10));
+  return formatISO(Date.UTC(year, month - 1, day), { representation: 'date' });
+}

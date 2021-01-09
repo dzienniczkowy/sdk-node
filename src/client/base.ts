@@ -26,7 +26,7 @@ export class BaseClient {
   /**
    * Cookie jar client object.
    */
-  public readonly cookieJar: CookieJar;
+  protected readonly cookieJar: CookieJar;
 
   /**
    * Config for post request.

@@ -1,7 +1,9 @@
 import cheerio from 'cheerio';
-import { DiaryListData } from '../diary/interfaces/diary-data';
+import { Diary } from '../diary/diary';
+import { DiaryListData } from '../diary/interfaces/diary/diary-data';
 import { Response } from '../diary/interfaces/response';
 import { UserObject } from '../diary/interfaces/user-object';
+import { mapDiaryInfo } from '../diary/mappers/diary-info';
 import NoUrlListError from '../errors/no-url-list';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
@@ -101,12 +103,14 @@ export class Client extends BaseClient {
         data: handleResponse(await this.post<Response<DiaryListData>>(url)),
       };
     }));
-    return results.flatMap(({ data, baseUrl }) => data.map((diary) => ({
-      diaryId: diary.IdDziennik,
-      studentId: diary.IdUczen,
-      schoolYear: diary.DziennikRokSzkolny,
-      baseUrl,
-      host: this.host,
-    })));
+    return results.flatMap(({ data, baseUrl }) => data.map((dataItem) => {
+      const info = mapDiaryInfo(dataItem);
+      return ({
+        info,
+        baseUrl,
+        host: this.host,
+        createDiary: (): Promise<Diary> => Diary.create(baseUrl, this.host, info, this.cookieJar),
+      });
+    }));
   }
 }

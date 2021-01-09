@@ -1,17 +1,24 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
 import format from 'date-fns/format';
 import startOfWeek from 'date-fns/startOfWeek';
 import { CookieJar } from 'tough-cookie';
 import { handleResponse } from '../utils';
+import { DiaryInfo } from './interfaces/diary/diary-info';
+import { GradeData } from './interfaces/grades/grade-data';
+import { Grades } from './interfaces/grades/grades';
 import { Response } from './interfaces/response';
 import { Timetable } from './interfaces/timetable/timetable';
 import { TimetableData } from './interfaces/timetable/timetable-data';
-import { UserObject } from './interfaces/user-object';
+import { mapGrades } from './mappers/grade-details';
 import { parseTimetable } from './parsers/timetable-parser';
 
 export class Diary {
-  private userObject: UserObject;
+  public readonly baseUrl: string;
+
+  public readonly host: string;
+
+  public readonly info: DiaryInfo;
 
   private readonly cookieJar: CookieJar;
 
@@ -20,14 +27,23 @@ export class Diary {
   /**
    * Api diary for SDK constructor.
    * Not supposed to be called directly
-   * @param userObject Selected diary from diary list.
+   * @param baseUrl Request base url.
+   * @param host Default host used by user.
+   * @param info DiaryInfo object.
    * @param cookieJar Client's cookie jar.
    */
-  private constructor(userObject: UserObject, cookieJar: CookieJar) {
+  private constructor(
+    baseUrl: string,
+    host: string,
+    info: DiaryInfo,
+    cookieJar: CookieJar,
+  ) {
+    this.baseUrl = baseUrl;
+    this.info = info;
+    this.host = host;
     this.cookieJar = cookieJar;
-    this.userObject = userObject;
     this.api = axios.create({
-      baseURL: userObject.baseUrl,
+      baseURL: baseUrl,
       withCredentials: true,
       jar: this.cookieJar,
     });
@@ -36,20 +52,36 @@ export class Diary {
 
   /**
    * Creates a Diary class instance.
-   * @param userObject Selected diary from diary list.
+   * @param baseUrl Request base url.
+   * @param host Default host used by user.
+   * @param info DiaryInfo object.
    * @param cookieJar Client's cookie jar.
    */
-  public static async create(userObject: UserObject, cookieJar: CookieJar): Promise<Diary> {
-    const diary = new Diary(userObject, cookieJar);
+  public static async create(
+    baseUrl: string,
+    host: string,
+    info: DiaryInfo,
+    cookieJar: CookieJar,
+  ): Promise<Diary> {
+    const diary = new Diary(baseUrl, host, info, cookieJar);
     await diary.setCookies();
     return diary;
   }
 
   private async setCookies(): Promise<void> {
-    await this.cookieJar.setCookie(`idBiezacyDziennik=${this.userObject.diaryId}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`);
-    await this.cookieJar.setCookie(`idBiezacyUczen=${this.userObject.studentId}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`);
-    await this.cookieJar.setCookie(`biezacyRokSzkolny=${this.userObject.schoolYear}; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`);
-    await this.cookieJar.setCookie(`idBiezacyDziennikPrzedszkole=0; path=/; domain=uonetplus-uczen.${this.userObject.host}`, `https://uonetplus-uczen.${this.userObject.host}`);
+    await this.cookieJar.setCookie(`idBiezacyDziennik=${this.info.diaryId}; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
+    await this.cookieJar.setCookie(`idBiezacyUczen=${this.info.studentId}; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
+    await this.cookieJar.setCookie(`biezacyRokSzkolny=${this.info.schoolYear}; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
+    await this.cookieJar.setCookie(`idBiezacyDziennikPrzedszkole=0; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
+  }
+
+  private async postAndHandle<T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig,
+  ): Promise<T> {
+    const response = await this.api.post<Response<T>>(url, data, config);
+    return handleResponse(response);
   }
 
   /**
@@ -58,14 +90,25 @@ export class Diary {
    * @resolve Timetable object.
    */
   public async getTimetable(date: Date): Promise<Timetable> {
-    const response = await this.api.post<Response<TimetableData>>(
+    const data = await this.postAndHandle<TimetableData>(
       'PlanZajec.mvc/Get',
       { data: Diary.getWeekDateString(date) },
     );
-    const data = handleResponse(response);
     return {
       lessons: parseTimetable(data),
     };
+  }
+
+  /**
+   * Returns information about student's grades
+   * @param semesterId Semester id
+   */
+  public async getGradeDetails(semesterId: number): Promise<Grades> {
+    const data = await this.postAndHandle<GradeData>(
+      'Oceny.mvc/Get',
+      { okres: semesterId },
+    );
+    return mapGrades(data);
   }
 
   private static getWeekDateString(date: Date): string {

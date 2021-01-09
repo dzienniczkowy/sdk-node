@@ -14,14 +14,14 @@ export interface DiaryDataItem {
   Id: number;
   IdUczen: number;
   UczenImie: string;
-  UczenImie2: string;
+  UczenImie2: string | null;
   UczenNazwisko: string;
   IsDziennik: boolean;
   IdDziennik: number;
   IdPrzedszkoleDziennik: number;
   Poziom: number;
   Symbol: string;
-  Nazwa?: string;
+  Nazwa: string | null;
   DziennikRokSzkolny: number;
   Okresy: DiaryDataSemester[];
   UczenPelnaNazwa: string;
