@@ -19,3 +19,13 @@ export function handleResponse<T>(response: AxiosResponse<Response<T>>): T {
   if (!response.data.success) throw new RequestFailedError(response);
   return response.data.data;
 }
+
+export function nullIfEmpty(value: string | null): string | null {
+  if (value === '') return null;
+  return value;
+}
+
+export function parseNotNullOrEmpty(value: string | null): number | null {
+  if (value === null || value === '') return null;
+  return parseFloat(value);
+}

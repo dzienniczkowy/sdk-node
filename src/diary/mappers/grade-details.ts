@@ -1,13 +1,8 @@
-import { toISODate } from '../../utils';
+import { nullIfEmpty, parseNotNullOrEmpty, toISODate } from '../../utils';
 import { GradeData, GradeDataPartial, GradeDataSubject } from '../interfaces/grades/grade-data';
 import { GradeSubject } from '../interfaces/grades/grade-subject';
 import { Grades } from '../interfaces/grades/grades';
 import { Color, PartialGrade } from '../interfaces/grades/partial-grade';
-
-function parseNotNull(value: string | null): number | null {
-  if (value === null) return null;
-  return parseFloat(value);
-}
 
 function parseColor(decimal: number): Color {
   const hex = decimal.toString(16).padStart(6, '0');
@@ -28,8 +23,8 @@ function mapPartialGrade(grade: GradeDataPartial): PartialGrade {
     entry: grade.Wpis,
     date: toISODate(grade.DataOceny),
     column: {
-      code: grade.KodKolumny,
-      name: grade.NazwaKolumny,
+      code: nullIfEmpty(grade.KodKolumny),
+      name: nullIfEmpty(grade.NazwaKolumny),
     },
     color: parseColor(grade.KolorOceny),
     teacher: grade.Nauczyciel,
@@ -41,11 +36,11 @@ function mapSubject(subject: GradeDataSubject): GradeSubject {
   return {
     name: subject.Przedmiot,
     visible: subject.WidocznyPrzedmiot,
-    proposedGrade: subject.ProponowanaOcenaRoczna,
-    finalGrade: subject.OcenaRoczna,
-    proposedPoints: parseNotNull(subject.ProponowanaOcenaRocznaPunkty),
-    finalPoints: parseNotNull(subject.OcenaRocznaPunkty),
-    pointsSum: parseNotNull(subject.SumaPunktow),
+    proposedGrade: nullIfEmpty(subject.ProponowanaOcenaRoczna),
+    finalGrade: nullIfEmpty(subject.OcenaRoczna),
+    proposedPoints: parseNotNullOrEmpty(subject.ProponowanaOcenaRocznaPunkty),
+    finalPoints: parseNotNullOrEmpty(subject.OcenaRocznaPunkty),
+    pointsSum: parseNotNullOrEmpty(subject.SumaPunktow),
     average: subject.Srednia === 0 ? null : subject.Srednia,
     partialGrades: subject.OcenyCzastkowe.map(mapPartialGrade),
   };
