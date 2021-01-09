@@ -1,4 +1,4 @@
-import { basicToExtendedISO } from '../../utils';
+import { basicToExtendedISO, parseNotNullOrEmpty } from '../../utils';
 import { Note, NoteType } from '../interfaces/notes-and-achievements/note';
 import { NotesAndAchievements } from '../interfaces/notes-and-achievements/notes-and-achievements';
 import {
@@ -18,7 +18,7 @@ export function mapNote(data: NoteData): Note {
     },
     content: data.TrescUwagi,
     dateTime: basicToExtendedISO(data.DataWpisu),
-    points: data.Punkty === '' ? null : parseFloat(data.Punkty),
+    points: parseNotNullOrEmpty(data.Punkty),
     showPoints: data.PokazPunkty,
     teacher: data.Nauczyciel,
   };

@@ -20,12 +20,12 @@ export function handleResponse<T>(response: AxiosResponse<Response<T>>): T {
   return response.data.data;
 }
 
-export function nullIfEmpty(value: string | null): string | null {
-  if (value === '') return null;
+export function nullIfEmpty(value: string | null | undefined): string | null {
+  if (value === '' || value === undefined) return null;
   return value;
 }
 
-export function parseNotNullOrEmpty(value: string | null): number | null {
-  if (value === null || value === '') return null;
+export function parseNotNullOrEmpty(value: string | null | undefined): number | null {
+  if (value === null || value === '' || value === undefined) return null;
   return parseFloat(value);
 }
