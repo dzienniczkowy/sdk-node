@@ -8,11 +8,7 @@ export interface NoteData {
   PokazPunkty: boolean;
 }
 
-// export interface AchievementData {
-//
-// }
-
 export interface NotesAndAchievementsData {
   Uwagi: NoteData[];
-  // Osiagniecia: AchievementData[];
+  Osiagniecia: string[];
 }

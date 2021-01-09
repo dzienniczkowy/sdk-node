@@ -24,13 +24,9 @@ export function mapNote(data: NoteData): Note {
   };
 }
 
-// export function mapAchievement(data: AchievementData): AchievementData {
-
-// }
-
 export function mapNotesAndAchievements(data: NotesAndAchievementsData): NotesAndAchievements {
   return {
-    // achievements: data.Osiagniecia.map(mapAchievement),
+    achievements: data.Osiagniecia,
     notes: data.Uwagi.map(mapNote),
   };
 }
