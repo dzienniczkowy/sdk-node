@@ -5,7 +5,13 @@ import { UserObject } from '../diary/interfaces/user-object';
 import NoUrlListError from '../errors/no-url-list';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
-  checkUserSignUrl, handleResponse, joinUrl, loginUrl, notNil, parseLoginResponds, parseSymbolsXml,
+  checkUserSignUrl,
+  handleResponse,
+  joinUrl,
+  loginUrl,
+  notNil,
+  parseLoginResponds,
+  parseSymbolsXml,
 } from '../utils';
 import { BaseClient } from './base';
 import { DefaultAjaxPostPayload } from './types';
@@ -63,7 +69,7 @@ export class Client extends BaseClient {
         payload,
       );
 
-      if (data.includes('appLink')) {
+      if (data.includes('newAppLink')) {
         this.initClient(data, symbol);
       }
     }));
