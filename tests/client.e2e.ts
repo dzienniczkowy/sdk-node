@@ -33,6 +33,11 @@ describe('Client', () => {
       const diaryList = await client.getDiaryList();
       expect(diaryList[0].host).toEqual('fakelog.cf');
     });
+
+    it('Get lucky numbers', async () => {
+      await client.login('jan@fakelog.cf', 'jan123');
+      await client.getLuckyNumbers();
+    });
   });
 });
 
