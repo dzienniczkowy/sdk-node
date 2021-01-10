@@ -1,3 +1,4 @@
+import { basicToDateISO } from '../../utils';
 import { DiaryDataItem, DiaryDataSemester } from '../interfaces/diary/diary-data';
 import { DiaryInfo, Semester } from '../interfaces/diary/diary-info';
 
@@ -8,8 +9,8 @@ function mapSemester(dataSemester: DiaryDataSemester): Semester {
     unitId: dataSemester.IdJednostkaSprawozdawcza,
     number: dataSemester.NumerOkresu,
     isLast: dataSemester.IsLastOkres,
-    startDate: dataSemester.DataOd.split(' ')[0],
-    endDate: dataSemester.DataDo.split(' ')[0],
+    startDate: basicToDateISO(dataSemester.DataOd),
+    endDate: basicToDateISO(dataSemester.DataDo),
     level: dataSemester.Poziom,
   };
 }

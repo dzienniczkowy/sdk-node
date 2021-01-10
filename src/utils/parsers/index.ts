@@ -58,9 +58,17 @@ export function toISODate(date: string): string {
 }
 
 /**
- * @param dateTime Date time from API (YY-MM-DD HH:mm:ss)
+ * @param dateTime Date time from API (YYYY-MM-DD HH:mm:ss)
  * @returns ISO 8601 date time string (YYYY-MM-DD'T'HH:mm:ss)
  */
 export function basicToExtendedISO(dateTime: string): string {
   return formatISO(parseISO(dateTime));
+}
+
+/**
+ * @param dateTime Date time from API (YYYY-MM-DD HH:mm:ss)
+ * @returns ISO 8601 date string (YYYY-MM-DD)
+ */
+export function basicToDateISO(dateTime: string): string {
+  return dateTime.split(' ')[0];
 }
