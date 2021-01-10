@@ -1,5 +1,5 @@
 import cheerio from 'cheerio';
-import { formatISO } from 'date-fns';
+import { formatISO, parseISO } from 'date-fns';
 import InvalidCredentialsError from '../../errors/invalid-credentials';
 import UnknownSymbolError from '../../errors/unknown-symbol';
 
@@ -55,4 +55,12 @@ export function toISODate(date: string): string {
     .split('.')
     .map((x) => parseInt(x, 10));
   return formatISO(Date.UTC(year, month - 1, day), { representation: 'date' });
+}
+
+/**
+ * @param dateTime Date time from API (YY-MM-DD HH:mm:ss)
+ * @returns ISO 8601 date time string (YYYY-MM-DD'T'HH:mm:ss)
+ */
+export function basicToExtendedISO(dateTime: string): string {
+  return formatISO(parseISO(dateTime));
 }

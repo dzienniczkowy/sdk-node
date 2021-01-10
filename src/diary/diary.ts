@@ -7,10 +7,13 @@ import { handleResponse } from '../utils';
 import { DiaryInfo } from './interfaces/diary/diary-info';
 import { GradeData } from './interfaces/grades/grade-data';
 import { Grades } from './interfaces/grades/grades';
+import { NotesAndAchievements } from './interfaces/notes-and-achievements/notes-and-achievements';
+import { NotesAndAchievementsData } from './interfaces/notes-and-achievements/notes-and-achievements-data';
 import { Response } from './interfaces/response';
 import { Timetable } from './interfaces/timetable/timetable';
 import { TimetableData } from './interfaces/timetable/timetable-data';
 import { mapGrades } from './mappers/grade-details';
+import { mapNotesAndAchievements } from './mappers/notes-and-achievements';
 import { parseTimetable } from './parsers/timetable-parser';
 
 export class Diary {
@@ -56,6 +59,7 @@ export class Diary {
    * @param host Default host used by user.
    * @param info DiaryInfo object.
    * @param cookieJar Client's cookie jar.
+   * @returns Promise<Diary>
    */
   public static async create(
     baseUrl: string,
@@ -85,9 +89,9 @@ export class Diary {
   }
 
   /**
-   * Represents timetable.
+   * Returns information about student's timetable.
    * @param date Selected diary from diary list.
-   * @resolve Timetable object.
+   * @returns Promise<Timetable>
    */
   public async getTimetable(date: Date): Promise<Timetable> {
     const data = await this.postAndHandle<TimetableData>(
@@ -100,8 +104,9 @@ export class Diary {
   }
 
   /**
-   * Returns information about student's grades
-   * @param semesterId Semester id
+   * Returns information about student's grades.
+   * @param semesterId Semester id.
+   * @returns Promise<Grades>
    */
   public async getGradeDetails(semesterId: number): Promise<Grades> {
     const data = await this.postAndHandle<GradeData>(
@@ -109,6 +114,17 @@ export class Diary {
       { okres: semesterId },
     );
     return mapGrades(data);
+  }
+
+  /**
+   * Returns list of student's achievements as strings and list of note objects.
+   * @returns Promise<NotesAndAchievements>
+   */
+  public async getNotesAndAchievements(): Promise<NotesAndAchievements> {
+    const data = await this.postAndHandle<NotesAndAchievementsData>(
+      'UwagiIOsiagniecia.mvc/Get',
+    );
+    return mapNotesAndAchievements(data);
   }
 
   private static getWeekDateString(date: Date): string {

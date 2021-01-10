@@ -59,4 +59,8 @@ describe('Diary', () => {
   it('Get grade details', async () => {
     await diary.getGradeDetails(diary.info.semesters[0].id);
   });
+
+  it('Get notes and achievements', async () => {
+    await diary.getNotesAndAchievements();
+  });
 });

@@ -44,7 +44,7 @@ export class Client extends BaseClient {
    * Covers region symbol finding.
    * @param username User login.
    * @param password User password.
-   * @resolve Region symbol for user.
+   * @returns Promise<string> Region symbol for user.
    */
   public async login(username: string, password: string): Promise<string> {
     const response = await this.post<string>(
