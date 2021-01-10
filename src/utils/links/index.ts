@@ -2,10 +2,11 @@
  * Generator for links to UONET+ default endpoint.
  * @param host User login host.
  * @param symbol User region tag.
- * @param url Relative URL for this generator.
  * @returns Absolute URL.
  */
-const uonetPlusBaseUrl = (host: string, symbol: string, url: string): string => `https://uonetplus.${host}/${symbol}/${url}`;
+import { joinUrl } from '../url';
+
+const uonetPlusBaseUrl = (host: string, symbol: string): string => `https://uonetplus.${host}/${symbol}`;
 
 /**
  * Login URL.
@@ -20,4 +21,12 @@ export const loginUrl = (host: string): string => `https://cufs.${host}/Default/
  * @param symbol Region tag.
  * @returns Check sign absolute endpoint URL.
  */
-export const checkUserSignUrl = (host: string, symbol: string): string => uonetPlusBaseUrl(host, symbol, 'LoginEndpoint.aspx');
+export const checkUserSignUrl = (host: string, symbol: string): string => joinUrl(uonetPlusBaseUrl(host, symbol), 'LoginEndpoint.aspx').toString();
+
+/**
+ * Lucky number tile URL.
+ * @param host User login host.
+ * @param symbol Region tag.
+ * @returns Lucky number tile absolute endpoint URL.
+ */
+export const luckyNumbersUrl = (host: string, symbol: string): string => joinUrl(uonetPlusBaseUrl(host, symbol), 'Start.mvc/GetKidsLuckyNumbers').toString();

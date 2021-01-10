@@ -32,6 +32,20 @@ describe('Client', () => {
       await client.login('jan@fakelog.cf', 'jan123');
       const diaryList = await client.getDiaryList();
       expect(diaryList[0].host).toEqual('fakelog.cf');
+      await diaryList[0].createDiary();
+    });
+  });
+
+  describe('Client data', () => {
+    let client: wulkanowy.Client;
+
+    beforeAll(async () => {
+      client = new wulkanowy.Client('fakelog.cf');
+      await client.login('jan@fakelog.cf', 'jan123');
+    });
+
+    it('Get lucky numbers', async () => {
+      await client.getLuckyNumbers();
     });
   });
 });
@@ -41,7 +55,7 @@ describe('Diary', () => {
   let diaryList: UserObject[];
   let diary: Diary;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     client = new wulkanowy.Client('fakelog.cf');
     await client.login('jan@fakelog.cf', 'jan123');
     diaryList = await client.getDiaryList();

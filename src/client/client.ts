@@ -1,9 +1,12 @@
 import cheerio from 'cheerio';
 import { Diary } from '../diary/diary';
 import { DiaryListData } from '../diary/interfaces/diary/diary-data';
+import { HomepageData } from '../diary/interfaces/homepage/homepage-data';
+import { LuckyNumber } from '../diary/interfaces/homepage/lucky-number';
 import { Response } from '../diary/interfaces/response';
 import { UserObject } from '../diary/interfaces/user-object';
 import { mapDiaryInfo } from '../diary/mappers/diary-info';
+import { mapLuckyNumbers } from '../diary/mappers/lucky-numbers';
 import NoUrlListError from '../errors/no-url-list';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
@@ -11,6 +14,7 @@ import {
   handleResponse,
   joinUrl,
   loginUrl,
+  luckyNumbersUrl,
   notNil,
   parseLoginResponds,
   parseSymbolsXml,
@@ -112,5 +116,14 @@ export class Client extends BaseClient {
         createDiary: (): Promise<Diary> => Diary.create(baseUrl, this.host, info, this.cookieJar),
       });
     }));
+  }
+
+  public async getLuckyNumbers(): Promise<LuckyNumber[]> {
+    if (!this.symbol) throw new UnknownSymbolError();
+    const response = await this.post<Response<HomepageData>>(
+      luckyNumbersUrl(this.host, this.symbol),
+    );
+    const data = handleResponse(response);
+    return mapLuckyNumbers(data);
   }
 }
