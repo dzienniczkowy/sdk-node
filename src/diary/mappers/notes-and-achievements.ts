@@ -6,15 +6,19 @@ import {
   NotesAndAchievementsData,
 } from '../interfaces/notes-and-achievements/notes-and-achievements-data';
 
-export function mapNote(data: NoteData): Note {
+function mapNoteType(dataType: number): NoteType {
   let type: NoteType = 'unknown';
-  if (data.KategoriaTyp === 1) type = 'positive';
-  else if (data.KategoriaTyp === 2) type = 'neutral';
-  else if (data.KategoriaTyp === 3) type = 'negative';
+  if (dataType === 1) type = 'positive';
+  else if (dataType === 2) type = 'neutral';
+  else if (dataType === 3) type = 'negative';
+  return type;
+}
+
+function mapNote(data: NoteData): Note {
   return {
     category: {
       name: data.Kategoria,
-      type,
+      type: mapNoteType(data.KategoriaTyp),
     },
     content: data.TrescUwagi,
     dateTime: basicToExtendedISO(data.DataWpisu),
