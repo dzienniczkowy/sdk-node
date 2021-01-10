@@ -9,5 +9,5 @@ export interface GradeSubject {
   average: number | null;
   proposedPoints: number | null;
   finalPoints: number | null;
-  pointsSum: number | null;
+  pointsSum: string | null;
 }

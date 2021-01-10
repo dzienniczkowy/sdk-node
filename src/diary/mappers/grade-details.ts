@@ -40,7 +40,7 @@ function mapSubject(subject: GradeDataSubject): GradeSubject {
     finalGrade: nullIfEmpty(subject.OcenaRoczna),
     proposedPoints: parseNotNullOrEmpty(subject.ProponowanaOcenaRocznaPunkty),
     finalPoints: parseNotNullOrEmpty(subject.OcenaRocznaPunkty),
-    pointsSum: parseNotNullOrEmpty(subject.SumaPunktow),
+    pointsSum: nullIfEmpty(subject.SumaPunktow),
     average: subject.Srednia === 0 ? null : subject.Srednia,
     partialGrades: subject.OcenyCzastkowe.map(mapPartialGrade),
   };
