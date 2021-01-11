@@ -1,4 +1,5 @@
 import {
+  dateStringAddWeeks,
   dayIsAfter, dayIsBefore, formatDateString, getWeekDate, inDateRange, parseDateString,
 } from './date';
 
@@ -93,5 +94,13 @@ describe('Date util tests', () => {
     expect(getWeekDate('2021-11-10')).toEqual('2021-11-08');
     expect(getWeekDate('2019-11-10')).toEqual('2019-11-04');
     expect(getWeekDate('2015-03-14')).toEqual('2015-03-09');
+  });
+
+  it('dateStringAddWeeks', () => {
+    expect(dateStringAddWeeks('2020-01-11', 1)).toEqual('2020-01-18');
+    expect(dateStringAddWeeks('2020-01-11', 3)).toEqual('2020-02-01');
+    expect(dateStringAddWeeks('2000-01-01', -1)).toEqual('1999-12-25');
+    expect(dateStringAddWeeks('2002-01-01', -2)).toEqual('2001-12-18');
+    expect(dateStringAddWeeks('2017-08-18', 0)).toEqual('2017-08-18');
   });
 });
