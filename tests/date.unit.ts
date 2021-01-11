@@ -7,7 +7,7 @@ import {
   inDateRange,
   parseDateString,
   requestWeeks,
-} from './date';
+} from '../src/utils';
 
 describe('Date utils', () => {
   describe('parseDateString', () => {

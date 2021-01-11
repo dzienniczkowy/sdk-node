@@ -2,7 +2,7 @@ import {
   dateStringToRemoteISO,
   humanDateToDateString, remoteISOToDateString,
   remoteISOToExtendedISO,
-} from './remote-date';
+} from '../src/utils';
 
 describe('Remote date utils', () => {
   it('humanDateToDateString', () => {
