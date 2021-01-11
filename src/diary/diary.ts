@@ -17,11 +17,14 @@ import { Grades } from './interfaces/grades/grades';
 import { NotesAndAchievements } from './interfaces/notes-and-achievements/notes-and-achievements';
 import { NotesAndAchievementsData } from './interfaces/notes-and-achievements/notes-and-achievements-data';
 import { Response } from './interfaces/response';
+import { SchoolInfo } from './interfaces/school-info/school-info';
+import { SchoolInfoData } from './interfaces/school-info/school-info-data';
 import { Timetable } from './interfaces/timetable/timetable';
 import { TimetableData } from './interfaces/timetable/timetable-data';
 import { mapExamDays } from './mappers/exam-mapper';
 import { mapGrades } from './mappers/grade-details';
 import { mapNotesAndAchievements } from './mappers/notes-and-achievements';
+import { mapSchoolInfo } from './mappers/school-info';
 import { parseTimetable } from './parsers/timetable-parser';
 
 export class Diary {
@@ -166,5 +169,12 @@ export class Diary {
       dateFrom,
       dateTo,
     ));
+  }
+
+  public async getSchoolInfo(): Promise<SchoolInfo> {
+    const data = await this.postAndHandle<SchoolInfoData>(
+      'SzkolaINauczyciele.mvc/Get',
+    );
+    return mapSchoolInfo(data);
   }
 }
