@@ -1,5 +1,5 @@
 import { URL } from 'url';
-import { joinPathNames, joinUrl } from '.';
+import { joinPathNames, joinUrl } from '../src/utils';
 
 describe('URL utils', () => {
   it('joinPathNames', () => {

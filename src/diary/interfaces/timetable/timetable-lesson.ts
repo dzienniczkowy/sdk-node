@@ -16,8 +16,7 @@ export interface TimetableLesson extends TimetableLessonInfo {
   number: number;
   start: string;
   end: string;
-  /**
-   * Lesson date as ISO 8601 string (YYYY-MM-DD).
-   */
   date: string;
+  startDateTime: string;
+  endDateTime: string;
 }

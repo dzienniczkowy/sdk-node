@@ -1,10 +1,17 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
-import format from 'date-fns/format';
-import startOfWeek from 'date-fns/startOfWeek';
 import { CookieJar } from 'tough-cookie';
-import { handleResponse } from '../utils';
+import {
+  dateStringToRemoteISO,
+  dayIsAfter,
+  getWeekDate,
+  handleResponse,
+  inDateRange,
+  requestWeeks,
+} from '../utils';
 import { DiaryInfo } from './interfaces/diary/diary-info';
+import { ExamDay } from './interfaces/exams/exam';
+import { ExamsData } from './interfaces/exams/exams-data';
 import { GradeData } from './interfaces/grades/grade-data';
 import { Grades } from './interfaces/grades/grades';
 import { NotesAndAchievements } from './interfaces/notes-and-achievements/notes-and-achievements';
@@ -12,6 +19,7 @@ import { NotesAndAchievementsData } from './interfaces/notes-and-achievements/no
 import { Response } from './interfaces/response';
 import { Timetable } from './interfaces/timetable/timetable';
 import { TimetableData } from './interfaces/timetable/timetable-data';
+import { mapExamDays } from './mappers/exam-mapper';
 import { mapGrades } from './mappers/grade-details';
 import { mapNotesAndAchievements } from './mappers/notes-and-achievements';
 import { parseTimetable } from './parsers/timetable-parser';
@@ -90,13 +98,13 @@ export class Diary {
 
   /**
    * Returns information about student's timetable.
-   * @param date Selected diary from diary list.
+   * @param date Date string (2021-02-28).
    * @returns Promise<Timetable>
    */
-  public async getTimetable(date: Date): Promise<Timetable> {
+  public async getTimetable(date: string): Promise<Timetable> {
     const data = await this.postAndHandle<TimetableData>(
       'PlanZajec.mvc/Get',
-      { data: Diary.getWeekDateString(date) },
+      { data: dateStringToRemoteISO(getWeekDate(date)) },
     );
     return {
       lessons: parseTimetable(data),
@@ -127,7 +135,36 @@ export class Diary {
     return mapNotesAndAchievements(data);
   }
 
-  private static getWeekDateString(date: Date): string {
-    return format(startOfWeek(date, { weekStartsOn: 1 }), "yyyy-MM-dd'T'HH:mm:ss");
+  /**
+   * Lists exams for all days between dateFrom and dateTo
+   * @param dateFrom Start date string (2020-01-28).
+   * @param dateTo End date string (2020-02-13).
+   * @param removeExcess Don't return days before dateFrom or after dateTo
+   */
+  public async getExams(
+    dateFrom: string,
+    dateTo: string,
+    removeExcess: boolean,
+  ): Promise<ExamDay[]> {
+    if (dayIsAfter(dateFrom, dateTo)) throw new Error('dateFrom is after than dateTo');
+    const weeks = requestWeeks(dateFrom, dateTo, 4);
+    const dataList = await Promise.all(weeks.map(async (week) => {
+      const data = await this.postAndHandle<ExamsData>(
+        'Sprawdziany.mvc/Get',
+        {
+          data: dateStringToRemoteISO(week),
+          rokSzkolny: this.info.schoolYear,
+        },
+      );
+      return mapExamDays(data);
+    }));
+    const allDays = dataList.flat(1);
+
+    if (!removeExcess) return allDays;
+    return allDays.filter((day) => inDateRange(
+      day.date,
+      dateFrom,
+      dateTo,
+    ));
   }
 }

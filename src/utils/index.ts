@@ -5,6 +5,8 @@ import RequestFailedError from '../errors/request-not-successful';
 export * from './links';
 export * from './parsers';
 export * from './url';
+export * from './date';
+export * from './remote-date';
 
 export function notNil<T>(value: T | undefined | null): value is T {
   return value !== undefined && value !== null;
