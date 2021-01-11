@@ -1,4 +1,4 @@
-import { nullIfEmpty, parseNotNullOrEmpty, toISODate } from '../../utils';
+import { humanDateToDateString, nullIfEmpty, parseNotNullOrEmpty } from '../../utils';
 import { GradeData, GradeDataPartial, GradeDataSubject } from '../interfaces/grades/grade-data';
 import { GradeSubject } from '../interfaces/grades/grade-subject';
 import { Grades } from '../interfaces/grades/grades';
@@ -21,7 +21,7 @@ function parseColor(decimal: number): Color {
 function mapPartialGrade(grade: GradeDataPartial): PartialGrade {
   return {
     entry: grade.Wpis,
-    date: toISODate(grade.DataOceny),
+    date: humanDateToDateString(grade.DataOceny),
     column: {
       code: nullIfEmpty(grade.KodKolumny),
       name: nullIfEmpty(grade.NazwaKolumny),

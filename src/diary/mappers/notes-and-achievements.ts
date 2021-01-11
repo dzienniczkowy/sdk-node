@@ -1,4 +1,4 @@
-import { parseNotNullOrEmpty, toExtendedISO } from '../../utils';
+import { parseNotNullOrEmpty, remoteISOToExtendedISO } from '../../utils';
 import { Note, NoteType } from '../interfaces/notes-and-achievements/note';
 import { NotesAndAchievements } from '../interfaces/notes-and-achievements/notes-and-achievements';
 import {
@@ -21,7 +21,7 @@ function mapNote(data: NoteData): Note {
       type: mapNoteType(data.KategoriaTyp),
     },
     content: data.TrescUwagi,
-    dateTime: toExtendedISO(data.DataWpisu),
+    dateTime: remoteISOToExtendedISO(data.DataWpisu),
     points: parseNotNullOrEmpty(data.Punkty),
     showPoints: data.PokazPunkty,
     teacher: data.Nauczyciel,

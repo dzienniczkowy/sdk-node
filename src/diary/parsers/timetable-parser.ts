@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import { notNil, toISODate } from '../../utils';
+import { humanDateToDateString, notNil } from '../../utils';
 import { TimetableData } from '../interfaces/timetable/timetable-data';
 import { TimetableLesson, TimetableLessonInfo } from '../interfaces/timetable/timetable-lesson';
 
@@ -173,7 +173,7 @@ export function parseTimetable(htmlResponse: TimetableData): TimetableLesson[] {
         if (!lesson) return null;
         return {
           ...lesson,
-          date: toISODate(weekDay.Text.split('<br />')[1]),
+          date: humanDateToDateString(weekDay.Text.split('<br />')[1]),
           number: parseInt(number, 10),
           start,
           end,
