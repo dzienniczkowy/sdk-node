@@ -2,16 +2,15 @@ import { remoteISOToDateString, remoteISOToExtendedISO } from '../../utils';
 import { Exam, ExamDay, ExamTypeName } from '../interfaces/exams/exam';
 import { ExamsData, ExamsDataDay, ExamsDataExam } from '../interfaces/exams/exams-data';
 
-const displayValueRegex = /^(.+) ([^\s|]+)(?:\|([^\s|]+))?$/m;
+const displayValueRegex = /^(.+) ([^\s|]+)(?:\|([^\s|]+))?$/;
 
 function parseDisplayValue(displayValue: string): {
   subject: string;
   class: string;
   group: string | null;
 } {
-  const matches = displayValueRegex.exec(displayValue);
-  if (matches === null) throw new Error(`Couldn't parse "${displayValue}" DisplayValue`);
-  const match = matches[0];
+  const match = displayValueRegex.exec(displayValue);
+  if (match === null) throw new Error(`Couldn't parse "${displayValue}" DisplayValue`);
   return {
     subject: match[1],
     class: match[2],
