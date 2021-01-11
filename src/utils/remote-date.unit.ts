@@ -15,9 +15,15 @@ describe('Remote date utils', () => {
   });
 
   it('remoteISOToExtendedISO', () => {
-    expect(remoteISOToExtendedISO('2021-01-11 17:30:15')).toEqual('2021-01-11T17:30:15+01:00');
-    expect(remoteISOToExtendedISO('2020-03-15 00:20:40')).toEqual('2020-03-15T00:20:40+01:00');
-    expect(remoteISOToExtendedISO('2013-08-01 00:20:40')).toEqual('2013-08-01T00:20:40+02:00');
+    const tests = [
+      ['2021-01-11 17:30:15', '2021-01-11T17:30:15+01:00'],
+      ['2020-03-15 00:20:40', '2020-03-15T00:20:40+01:00'],
+      ['2013-08-01 00:20:40', '2013-08-01T00:20:40+02:00'],
+    ];
+    tests.forEach(([actual, expected]) => {
+      expect(new Date(remoteISOToExtendedISO(actual)).getTime())
+        .toEqual(new Date(expected).getTime());
+    });
   });
 
   it('dateStringToRemoteISO', () => {
