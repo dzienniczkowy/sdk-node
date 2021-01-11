@@ -1,5 +1,5 @@
 import {
-  dayIsAfter, dayIsBefore, formatDateString, inDateRange, parseDateString,
+  dayIsAfter, dayIsBefore, formatDateString, getWeekDate, inDateRange, parseDateString,
 } from './date';
 
 describe('Date util tests', () => {
@@ -84,5 +84,14 @@ describe('Date util tests', () => {
     expect(inDateRange('2013-09-17', '2013-09-17', '2013-09-17')).toEqual(true);
     expect(inDateRange('2013-09-18', '2013-09-17', '2013-09-17')).toEqual(false);
     expect(inDateRange('2013-09-16', '2013-09-17', '2013-09-17')).toEqual(false);
+  });
+
+  it('getWeekDate', () => {
+    expect(getWeekDate('2021-01-11')).toEqual('2021-01-11');
+    expect(getWeekDate('2021-01-12')).toEqual('2021-01-11');
+    expect(getWeekDate('2021-01-10')).toEqual('2021-01-04');
+    expect(getWeekDate('2021-11-10')).toEqual('2021-11-08');
+    expect(getWeekDate('2019-11-10')).toEqual('2019-11-04');
+    expect(getWeekDate('2015-03-14')).toEqual('2015-03-09');
   });
 });
