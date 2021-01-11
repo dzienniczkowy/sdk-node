@@ -51,4 +51,8 @@ describe('Diary', () => {
     await expect(diary.getExams('2020-01-01', '2020-01-29', false))
       .resolves.toHaveProperty('length', 56);
   });
+
+  it('Get school info', async () => {
+    await diary.getSchoolInfo();
+  });
 });

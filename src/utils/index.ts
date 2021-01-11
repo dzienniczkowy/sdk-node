@@ -23,11 +23,11 @@ export function handleResponse<T>(response: AxiosResponse<Response<T>>): T {
 }
 
 export function nullIfEmpty(value: string | null | undefined): string | null {
-  if (value === '' || value === undefined) return null;
+  if (value === undefined || value === null || value.trim() === '') return null;
   return value;
 }
 
 export function parseNotNullOrEmpty(value: string | null | undefined): number | null {
-  if (value === null || value === '' || value === undefined) return null;
+  if (value === undefined || value === null || value.trim() === '') return null;
   return parseFloat(value);
 }
