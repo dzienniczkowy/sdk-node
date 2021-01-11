@@ -1,6 +1,12 @@
 import {
   dateStringAddWeeks,
-  dayIsAfter, dayIsBefore, formatDateString, getWeekDate, inDateRange, parseDateString,
+  dayIsAfter,
+  dayIsBefore,
+  formatDateString,
+  getWeekDate,
+  inDateRange,
+  parseDateString,
+  requestWeeks,
 } from './date';
 
 describe('Date util tests', () => {
@@ -102,5 +108,12 @@ describe('Date util tests', () => {
     expect(dateStringAddWeeks('2000-01-01', -1)).toEqual('1999-12-25');
     expect(dateStringAddWeeks('2002-01-01', -2)).toEqual('2001-12-18');
     expect(dateStringAddWeeks('2017-08-18', 0)).toEqual('2017-08-18');
+  });
+
+  it('requestWeeks', () => {
+    expect(requestWeeks('2020-10-12', '2020-10-18', 1)).toEqual(['2020-10-12']);
+    expect(requestWeeks('2020-10-12', '2020-10-18', 2)).toEqual(['2020-10-12']);
+    expect(requestWeeks('2020-10-12', '2020-10-25', 1)).toEqual(['2020-10-12', '2020-10-19']);
+    expect(requestWeeks('2018-07-20', '2018-08-29', 3)).toEqual(['2018-07-16', '2018-08-06', '2018-08-27']);
   });
 });
