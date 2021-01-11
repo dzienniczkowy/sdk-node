@@ -1,8 +1,12 @@
 import {
   dateStringToRemoteISO,
   humanDateToDateString, remoteISOToDateString,
-  remoteISOToExtendedISO,
+  remoteISOToExtendedISO, remoteTimeToDateTimeString,
 } from '../src/utils';
+
+function expectDatesEqual(firstDateString: string, secondDateString: string): void {
+  expect(new Date(firstDateString).getTime()).toEqual(new Date(secondDateString).getTime());
+}
 
 describe('Remote date utils', () => {
   it('humanDateToDateString', () => {
@@ -15,15 +19,9 @@ describe('Remote date utils', () => {
   });
 
   it('remoteISOToExtendedISO', () => {
-    const tests = [
-      ['2021-01-11 17:30:15', '2021-01-11T17:30:15+01:00'],
-      ['2020-03-15 00:20:40', '2020-03-15T00:20:40+01:00'],
-      ['2013-08-01 00:20:40', '2013-08-01T00:20:40+02:00'],
-    ];
-    tests.forEach(([actual, expected]) => {
-      expect(new Date(remoteISOToExtendedISO(actual)).getTime())
-        .toEqual(new Date(expected).getTime());
-    });
+    expectDatesEqual(remoteISOToExtendedISO('2021-01-11 17:30:15'), '2021-01-11T17:30:15+01:00');
+    expectDatesEqual(remoteISOToExtendedISO('2020-03-15 00:20:40'), '2020-03-15T00:20:40+01:00');
+    expectDatesEqual(remoteISOToExtendedISO('2013-08-01 00:20:40'), '2013-08-01T00:20:40+02:00');
   });
 
   it('dateStringToRemoteISO', () => {
@@ -41,5 +39,11 @@ describe('Remote date utils', () => {
     expect(remoteISOToDateString('2014-01-01 00:00:00')).toEqual('2014-01-01');
     expect(remoteISOToDateString('2016-02-29 00:00:00')).toEqual('2016-02-29');
     expect(remoteISOToDateString('2015-01-01 13:27:59')).toEqual('2015-01-01');
+  });
+
+  it('remoteTimeToDateTimeString', () => {
+    expectDatesEqual(remoteTimeToDateTimeString('2021-01-11', '17:30'), '2021-01-11T17:30:00+01:00');
+    expectDatesEqual(remoteTimeToDateTimeString('2020-03-15', '00:20'), '2020-03-15T00:20:00+01:00');
+    expectDatesEqual(remoteTimeToDateTimeString('2013-08-01', '00:20'), '2013-08-01T00:20:00+02:00');
   });
 });

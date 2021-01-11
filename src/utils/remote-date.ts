@@ -29,3 +29,7 @@ export function dateStringToRemoteISO(dateString: string): string {
 export function remoteISOToDateString(dateTimeString: string): string {
   return format(parse(dateTimeString, 'yyyy-MM-dd HH:mm:ss', new Date()), 'yyyy-MM-dd');
 }
+
+export function remoteTimeToDateTimeString(dateString: string, time: string): string {
+  return formatISO(zonedTimeToUtc(parse(`${dateString} ${time}`, 'yyyy-MM-dd HH:mm', new Date()), 'Europe/Warsaw'));
+}
