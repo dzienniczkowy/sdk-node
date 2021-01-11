@@ -5,5 +5,5 @@ export interface UserObject {
   info: DiaryInfo;
   baseUrl: string;
   host: string;
-  createDiary: () => Promise<Diary>;
+  createDiary: () => Diary;
 }

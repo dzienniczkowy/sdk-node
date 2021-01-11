@@ -113,7 +113,7 @@ export class Client extends BaseClient {
         info,
         baseUrl,
         host: this.host,
-        createDiary: (): Promise<Diary> => Diary.create(baseUrl, this.host, info, this.cookieJar),
+        createDiary: (): Diary => new Diary(baseUrl, this.host, info, this.cookieJar),
       });
     }));
   }

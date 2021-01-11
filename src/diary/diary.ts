@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import {
@@ -36,17 +36,18 @@ export class Diary {
 
   private readonly cookieJar: CookieJar;
 
+  private readonly diaryCookieJar: CookieJar;
+
   private api: AxiosInstance;
 
   /**
    * Api diary for SDK constructor.
-   * Not supposed to be called directly
    * @param baseUrl Request base url.
    * @param host Default host used by user.
    * @param info DiaryInfo object.
    * @param cookieJar Client's cookie jar.
    */
-  private constructor(
+  public constructor(
     baseUrl: string,
     host: string,
     info: DiaryInfo,
@@ -56,6 +57,8 @@ export class Diary {
     this.info = info;
     this.host = host;
     this.cookieJar = cookieJar;
+    this.diaryCookieJar = new CookieJar();
+    this.setDiaryCookies();
     this.api = axios.create({
       baseURL: baseUrl,
       withCredentials: true,
@@ -64,38 +67,30 @@ export class Diary {
     axiosCookieJarSupport(this.api);
   }
 
-  /**
-   * Creates a Diary class instance.
-   * @param baseUrl Request base url.
-   * @param host Default host used by user.
-   * @param info DiaryInfo object.
-   * @param cookieJar Client's cookie jar.
-   * @returns Promise<Diary>
-   */
-  public static async create(
-    baseUrl: string,
-    host: string,
-    info: DiaryInfo,
-    cookieJar: CookieJar,
-  ): Promise<Diary> {
-    const diary = new Diary(baseUrl, host, info, cookieJar);
-    await diary.setCookies();
-    return diary;
+  private setDiaryCookies(): void {
+    this.diaryCookieJar.setCookieSync(`idBiezacyDziennik=${this.info.diaryId}; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
+    this.diaryCookieJar.setCookieSync(`idBiezacyUczen=${this.info.studentId}; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
+    this.diaryCookieJar.setCookieSync(`biezacyRokSzkolny=${this.info.schoolYear}; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
+    this.diaryCookieJar.setCookieSync(`idBiezacyDziennikPrzedszkole=0; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
   }
 
-  private async setCookies(): Promise<void> {
-    await this.cookieJar.setCookie(`idBiezacyDziennik=${this.info.diaryId}; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
-    await this.cookieJar.setCookie(`idBiezacyUczen=${this.info.studentId}; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
-    await this.cookieJar.setCookie(`biezacyRokSzkolny=${this.info.schoolYear}; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
-    await this.cookieJar.setCookie(`idBiezacyDziennikPrzedszkole=0; path=/; domain=uonetplus-uczen.${this.host}`, `https://uonetplus-uczen.${this.host}`);
+  private getDiaryCookieString(): string {
+    return this.diaryCookieJar.getCookieStringSync(`https://uonetplus-uczen.${this.host}`);
   }
 
   private async postAndHandle<T>(
     url: string,
     data?: unknown,
-    config?: AxiosRequestConfig,
   ): Promise<T> {
-    const response = await this.api.post<Response<T>>(url, data, config);
+    const response = await this.api.post<Response<T>>(
+      url,
+      data,
+      {
+        headers: {
+          Cookie: this.getDiaryCookieString(),
+        },
+      },
+    );
     return handleResponse(response);
   }
 
