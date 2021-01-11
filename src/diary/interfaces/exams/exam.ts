@@ -16,6 +16,6 @@ export interface Exam {
 
 export interface ExamDay {
   date: string;
-  visible: boolean;
+  show: boolean;
   exams: Exam[];
 }

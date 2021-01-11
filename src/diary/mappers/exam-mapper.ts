@@ -43,7 +43,7 @@ function mapExamDay(dataDay: ExamsDataDay): ExamDay {
   return {
     date,
     exams: dataDay.Sprawdziany.map((exam) => mapExam(exam, date)),
-    visible: dataDay.Pokazuj,
+    show: dataDay.Pokazuj,
   };
 }
 
