@@ -12,7 +12,7 @@ export function humanDateToDateString(dateString: string): string {
 
 /**
  * @param dateTimeString Date time from API (YYYY-MM-DD HH:mm:ss)
- * @returns ISO 8601 date time string (YYYY-MM-DD'T'HH:mm:ss)
+ * @returns ISO 8601 date time string (YYYY-MM-DD'T'HH:mm:ssX)
  */
 export function remoteISOToExtendedISO(dateTimeString: string): string {
   return formatISO(zonedTimeToUtc(dateTimeString, 'Europe/Warsaw'));

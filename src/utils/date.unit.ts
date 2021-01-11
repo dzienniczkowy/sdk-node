@@ -9,7 +9,7 @@ import {
   requestWeeks,
 } from './date';
 
-describe('Date util tests', () => {
+describe('Date utils', () => {
   describe('parseDateString', () => {
     it('Basic', () => {
       const date = parseDateString('2020-11-20');
