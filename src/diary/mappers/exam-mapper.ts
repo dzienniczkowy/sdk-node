@@ -1,4 +1,4 @@
-import { basicToDateISO, basicToExtendedISO } from '../../utils';
+import { localDateTimeToISODate, toExtendedISO } from '../../utils';
 import { Exam, ExamDay, ExamTypeName } from '../interfaces/exams/exam';
 import { ExamsData, ExamsDataDay, ExamsDataExam } from '../interfaces/exams/exams-data';
 
@@ -28,7 +28,7 @@ function examTypeName(dataType: number): ExamTypeName {
 function mapExam(dataExam: ExamsDataExam, date: string): Exam {
   return {
     ...parseDisplayValue(dataExam.DisplayValue),
-    entryDateTime: basicToExtendedISO(dataExam.DataModyfikacji),
+    entryDateTime: toExtendedISO(dataExam.DataModyfikacji),
     date,
     description: dataExam.Opis,
     teacher: dataExam.PracownikModyfikujacyDisplay,
@@ -40,7 +40,7 @@ function mapExam(dataExam: ExamsDataExam, date: string): Exam {
 }
 
 function mapExamDay(dataDay: ExamsDataDay): ExamDay {
-  const date = basicToDateISO(dataDay.Data);
+  const date = localDateTimeToISODate(dataDay.Data);
   return {
     date,
     exams: dataDay.Sprawdziany.map((exam) => mapExam(exam, date)),

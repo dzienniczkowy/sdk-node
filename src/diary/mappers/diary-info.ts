@@ -1,4 +1,4 @@
-import { basicToDateISO } from '../../utils';
+import { localDateTimeToISODate } from '../../utils';
 import { DiaryDataItem, DiaryDataSemester } from '../interfaces/diary/diary-data';
 import { DiaryInfo, Semester } from '../interfaces/diary/diary-info';
 
@@ -9,8 +9,8 @@ function mapSemester(dataSemester: DiaryDataSemester): Semester {
     unitId: dataSemester.IdJednostkaSprawozdawcza,
     number: dataSemester.NumerOkresu,
     isLast: dataSemester.IsLastOkres,
-    startDate: basicToDateISO(dataSemester.DataOd),
-    endDate: basicToDateISO(dataSemester.DataDo),
+    startDate: localDateTimeToISODate(dataSemester.DataOd),
+    endDate: localDateTimeToISODate(dataSemester.DataDo),
     level: dataSemester.Poziom,
   };
 }

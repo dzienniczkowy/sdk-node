@@ -1,12 +1,10 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
-import {
-  addWeeks, isAfter, isBefore, startOfDay,
-} from 'date-fns';
-import format from 'date-fns/format';
-import startOfWeek from 'date-fns/startOfWeek';
+import { addWeeks, isAfter } from 'date-fns';
 import { CookieJar } from 'tough-cookie';
-import { handleResponse } from '../utils';
+import {
+  dayIsAfter, formatLocalISO, getWeekDate, handleResponse, inDateRange,
+} from '../utils';
 import { DiaryInfo } from './interfaces/diary/diary-info';
 import { ExamDay } from './interfaces/exams/exam';
 import { ExamsData } from './interfaces/exams/exams-data';
@@ -102,7 +100,7 @@ export class Diary {
   public async getTimetable(date: Date): Promise<Timetable> {
     const data = await this.postAndHandle<TimetableData>(
       'PlanZajec.mvc/Get',
-      { data: Diary.formatLocalISO(Diary.getWeekDate(date)) },
+      { data: formatLocalISO(getWeekDate(date)) },
     );
     return {
       lessons: parseTimetable(data),
@@ -134,9 +132,9 @@ export class Diary {
   }
 
   private static examRequestWeeks(from: Date, to: Date): Date[] {
-    const endWeek = Diary.getWeekDate(to);
+    const endWeek = getWeekDate(to);
     const weeks: Date[] = [];
-    let currentWeek = Diary.getWeekDate(from);
+    let currentWeek = getWeekDate(from);
     do {
       weeks.push(currentWeek);
       currentWeek = addWeeks(currentWeek, 4);
@@ -144,7 +142,6 @@ export class Diary {
     return weeks;
   }
 
-  // TODO: Handle timezones
   /**
    * Lists exams for all days between dateFrom and dateTo
    * @param dateFrom start date.
@@ -152,13 +149,13 @@ export class Diary {
    * @param removeExcess don't return days before dateFrom or after dateTo
    */
   public async getExams(dateFrom: Date, dateTo: Date, removeExcess: boolean): Promise<ExamDay[]> {
-    if (Diary.dayIsAfter(dateFrom, dateTo)) throw new Error('dateFrom is after than dateTo');
+    if (dayIsAfter(dateFrom, dateTo)) throw new Error('dateFrom is after than dateTo');
     const weeks = Diary.examRequestWeeks(dateFrom, dateTo);
     const dataList = await Promise.all(weeks.map(async (week) => {
       const data = await this.postAndHandle<ExamsData>(
         'Sprawdziany.mvc/Get',
         {
-          data: Diary.formatLocalISO(week),
+          data: formatLocalISO(week),
           rokSzkolny: this.info.schoolYear,
         },
       );
@@ -167,29 +164,10 @@ export class Diary {
     const allDays = dataList.flat(1);
 
     if (!removeExcess) return allDays;
-    return allDays.filter((day) => Diary.inDateRange(
+    return allDays.filter((day) => inDateRange(
       new Date(day.date), // Probably doesn't handle timezones well
       dateFrom,
       dateTo,
     ));
-  }
-
-  private static dayIsAfter(date: Date, dateToCompare: Date): boolean {
-    return isAfter(startOfDay(date), startOfDay(dateToCompare));
-  }
-
-  private static inDateRange(date: Date, from: Date, to: Date): boolean {
-    const dateDay = startOfDay(date);
-    const dateFromDay = startOfDay(from);
-    const dateToDay = startOfDay(to);
-    return !isBefore(dateDay, dateFromDay) && !isAfter(dateDay, dateToDay);
-  }
-
-  private static getWeekDate(date: Date): Date {
-    return startOfWeek(date, { weekStartsOn: 1 });
-  }
-
-  private static formatLocalISO(date: Date): string {
-    return format(date, "yyyy-MM-dd'T'HH:mm:ss");
   }
 }
