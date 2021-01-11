@@ -30,7 +30,7 @@ describe('Client', () => {
       await client.login('jan@fakelog.cf', 'jan123');
       const diaryList = await client.getDiaryList();
       expect(diaryList[0].host).toEqual('fakelog.cf');
-      await diaryList[0].createDiary();
+      diaryList[0].createDiary();
     });
   });
 

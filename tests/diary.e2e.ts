@@ -13,7 +13,7 @@ describe('Diary', () => {
     client = new wulkanowy.Client('fakelog.cf');
     await client.login('jan@fakelog.cf', 'jan123');
     diaryList = await client.getDiaryList();
-    diary = await diaryList[0].createDiary();
+    diary = diaryList[0].createDiary();
   });
 
   afterAll(() => {
