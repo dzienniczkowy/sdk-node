@@ -1,4 +1,6 @@
-import { formatDateString, parseDateString } from './date';
+import {
+  dayIsAfter, dayIsBefore, formatDateString, inDateRange, parseDateString,
+} from './date';
 
 describe('Date util tests', () => {
   describe('parseDateString', () => {
@@ -53,5 +55,34 @@ describe('Date util tests', () => {
         }
       });
     });
+  });
+
+  it('dayIsAfter and dayIsBefore', () => {
+    const tests: [string, 'before' | 'after' | 'equal', string][] = [
+      ['2020-10-10', 'equal', '2020-10-10'],
+      ['2000-12-31', 'before', '2001-01-01'],
+      ['2010-10-02', 'after', '2010-10-01'],
+      ['2015-02-28', 'before', '2015-03-01'],
+      ['2020-01-11', 'after', '2020-01-09'],
+      ['2020-01-11', 'after', '2020-1-9'],
+      ['2022-05-23', 'equal', '2022-5-23'],
+      ['2022-05-03', 'equal', '2022-5-3'],
+    ];
+    tests.forEach(([date, relationship, dateToCompare]) => {
+      expect(dayIsBefore(date, dateToCompare)).toEqual(relationship === 'before');
+      expect(dayIsAfter(date, dateToCompare)).toEqual(relationship === 'after');
+    });
+  });
+
+  it('inDateRange', () => {
+    expect(inDateRange('2020-05-01', '2020-04-01', '2020-06-01')).toEqual(true);
+    expect(inDateRange('2020-03-01', '2020-04-01', '2020-06-01')).toEqual(false);
+    expect(inDateRange('2015-07-01', '2020-04-01', '2020-06-01')).toEqual(false);
+    expect(inDateRange('2010-04-15', '2010-05-30', '2010-01-01')).toEqual(false);
+    expect(inDateRange('2020-05-05', '2020-05-05', '2020-06-01')).toEqual(true);
+    expect(inDateRange('2020-06-01', '2020-05-05', '2020-06-01')).toEqual(true);
+    expect(inDateRange('2013-09-17', '2013-09-17', '2013-09-17')).toEqual(true);
+    expect(inDateRange('2013-09-18', '2013-09-17', '2013-09-17')).toEqual(false);
+    expect(inDateRange('2013-09-16', '2013-09-17', '2013-09-17')).toEqual(false);
   });
 });

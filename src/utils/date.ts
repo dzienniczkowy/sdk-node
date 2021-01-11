@@ -15,6 +15,10 @@ export function dayIsAfter(dateString: string, dateToCompareString: string): boo
   return isAfter(parseDateString(dateString), parseDateString(dateToCompareString));
 }
 
+export function dayIsBefore(dateString: string, dateToCompareString: string): boolean {
+  return isBefore(parseDateString(dateString), parseDateString(dateToCompareString));
+}
+
 export function inDateRange(date: string, from: string, to: string): boolean {
   const dateDay = parseDateString(date);
   const dateFromDay = parseDateString(from);
