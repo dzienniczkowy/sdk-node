@@ -8,8 +8,20 @@ import { BaseClientConfig } from './types';
  * Basic handlers for UONET+ API client.
  */
 export class BaseClient {
-  public constructor() {
-    this.cookieJar = new CookieJar();
+  private api: AxiosInstance;
+
+  /**
+   * Cookie jar client object.
+   */
+  public readonly cookieJar: CookieJar;
+
+  /**
+   * Config for post request.
+   */
+  protected readonly config: BaseClientConfig;
+
+  public constructor(cookieJar: CookieJar) {
+    this.cookieJar = cookieJar;
     this.config = {
       jar: this.cookieJar,
       withCredentials: true,
@@ -20,18 +32,6 @@ export class BaseClient {
     this.api = axios.create();
     axiosCookieJarSupport(this.api);
   }
-
-  private api: AxiosInstance;
-
-  /**
-   * Cookie jar client object.
-   */
-  protected readonly cookieJar: CookieJar;
-
-  /**
-   * Config for post request.
-   */
-  protected readonly config: BaseClientConfig;
 
   /**
    * Basic post request handler.

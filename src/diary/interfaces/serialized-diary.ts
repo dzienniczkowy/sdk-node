@@ -1,9 +1,7 @@
-import { Diary } from '../diary';
 import { DiaryInfo } from './diary/diary-info';
 
-export interface UserObject {
+export interface SerializedDiary {
   info: DiaryInfo;
   baseUrl: string;
   host: string;
-  createDiary: () => Diary;
 }

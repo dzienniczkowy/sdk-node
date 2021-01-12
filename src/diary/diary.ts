@@ -19,6 +19,7 @@ import { NotesAndAchievementsData } from './interfaces/notes-and-achievements/no
 import { Response } from './interfaces/response';
 import { SchoolInfo } from './interfaces/school-info/school-info';
 import { SchoolInfoData } from './interfaces/school-info/school-info-data';
+import { SerializedDiary } from './interfaces/serialized-diary';
 import { Timetable } from './interfaces/timetable/timetable';
 import { TimetableData } from './interfaces/timetable/timetable-data';
 import { mapExamDays } from './mappers/exam-mapper';
@@ -28,9 +29,9 @@ import { mapSchoolInfo } from './mappers/school-info';
 import { parseTimetable } from './parsers/timetable-parser';
 
 export class Diary {
-  public readonly baseUrl: string;
+  private readonly baseUrl: string;
 
-  public readonly host: string;
+  private readonly host: string;
 
   public readonly info: DiaryInfo;
 
@@ -42,29 +43,33 @@ export class Diary {
 
   /**
    * Api diary for SDK constructor.
-   * @param baseUrl Request base url.
-   * @param host Default host used by user.
-   * @param info DiaryInfo object.
+   * @param serializedDiary Serialized diary.
    * @param cookieJar Client's cookie jar.
    */
   public constructor(
-    baseUrl: string,
-    host: string,
-    info: DiaryInfo,
+    serializedDiary: SerializedDiary,
     cookieJar: CookieJar,
   ) {
-    this.baseUrl = baseUrl;
-    this.info = info;
-    this.host = host;
+    this.baseUrl = serializedDiary.baseUrl;
+    this.info = serializedDiary.info;
+    this.host = serializedDiary.host;
     this.cookieJar = cookieJar;
     this.diaryCookieJar = new CookieJar();
     this.setDiaryCookies();
     this.api = axios.create({
-      baseURL: baseUrl,
+      baseURL: this.baseUrl,
       withCredentials: true,
       jar: this.cookieJar,
     });
     axiosCookieJarSupport(this.api);
+  }
+
+  public serialize(): SerializedDiary {
+    return {
+      info: { ...this.info },
+      baseUrl: this.baseUrl,
+      host: this.host,
+    };
   }
 
   private setDiaryCookies(): void {
