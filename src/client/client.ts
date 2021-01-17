@@ -36,18 +36,15 @@ export class Client extends BaseClient {
   public urlList: string[] | undefined;
 
   /**
-   * Client host.
-   */
-  private readonly host: string = '';
-
-  /**
    * API client for SDK constructor.
    * @param host Default host used by user.
    * @param cookieJar Use custom CookieJar instead of generating a new one.
    */
-  public constructor(host: string, cookieJar?: CookieJar) {
+  public constructor(
+    private readonly host: string,
+    cookieJar?: CookieJar,
+  ) {
     super(cookieJar ?? new CookieJar());
-    this.host = host;
   }
 
   /**
@@ -135,7 +132,7 @@ export class Client extends BaseClient {
       };
       return ({
         serialized,
-        createDiary: (): Diary => new Diary(serialized, this.cookieJar),
+        createDiary: (): Diary => new Diary(this, serialized),
       });
     }));
   }

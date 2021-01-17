@@ -65,7 +65,7 @@ describe('Diary', () => {
       const diaryList = await client.getDiaryList();
 
       const { serialized } = diaryList[1];
-      const serializedAgain = new Diary(serialized, client.cookieJar).serialize();
+      const serializedAgain = new Diary(client, serialized).serialize();
 
       const serializedCreateFunction = diaryList[1].createDiary().serialize();
 

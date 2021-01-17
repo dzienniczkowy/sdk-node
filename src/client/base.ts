@@ -11,17 +11,16 @@ export class BaseClient {
   private api: AxiosInstance;
 
   /**
-   * Cookie jar client object.
-   */
-  public readonly cookieJar: CookieJar;
-
-  /**
    * Config for post request.
    */
   protected readonly config: BaseClientConfig;
 
-  public constructor(cookieJar: CookieJar) {
-    this.cookieJar = cookieJar;
+  /**
+   * @param cookieJar Cookie jar client object
+   */
+  public constructor(
+    public readonly cookieJar: CookieJar,
+  ) {
     this.config = {
       jar: this.cookieJar,
       withCredentials: true,

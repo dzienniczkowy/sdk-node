@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
+import type { Client } from '../client/client';
 import {
   dateStringToRemoteISO,
   dayIsAfter,
@@ -35,31 +36,27 @@ export class Diary {
 
   public readonly info: DiaryInfo;
 
-  private readonly cookieJar: CookieJar;
-
-  private readonly diaryCookieJar: CookieJar;
+  private readonly diaryCookieJar = new CookieJar();
 
   private api: AxiosInstance;
 
   /**
    * Api diary for SDK constructor.
+   * @param client SDK Client
    * @param serializedDiary Serialized diary.
-   * @param cookieJar Client's cookie jar.
    */
   public constructor(
+    private readonly client: Client,
     serializedDiary: SerializedDiary,
-    cookieJar: CookieJar,
   ) {
     this.baseUrl = serializedDiary.baseUrl;
     this.info = serializedDiary.info;
     this.host = serializedDiary.host;
-    this.cookieJar = cookieJar;
-    this.diaryCookieJar = new CookieJar();
     this.setDiaryCookies();
     this.api = axios.create({
       baseURL: this.baseUrl,
       withCredentials: true,
-      jar: this.cookieJar,
+      jar: this.client.cookieJar,
     });
     axiosCookieJarSupport(this.api);
   }
