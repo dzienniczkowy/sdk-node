@@ -1,7 +1,7 @@
 {
   "name": "@wulkanowy/sdk",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.0",
+  "description": "VULCAN UONET+ JavaScript SDK",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,7 +9,8 @@
     "lint": "eslint -c .eslintrc.json --ext .ts src/** tests/**",
     "lint:fix": "eslint -c .eslintrc.json --ext .ts src/** tests/** --fix",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "release": "release-it --only-version"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-plugin-import": "^2.22.1",
     "jest": "^26.6.3",
+    "release-it": "^14.2.2",
     "ts-jest": "^26.4.4",
     "typescript": "^4.1.3"
   },
