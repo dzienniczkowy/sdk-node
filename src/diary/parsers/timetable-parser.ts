@@ -1,4 +1,5 @@
-import * as cheerio from 'cheerio';
+import type { Cheerio } from 'cheerio';
+import cheerio from 'cheerio';
 import { humanDateToDateString, notNil, remoteTimeToDateTimeString } from '../../utils';
 import type { TimetableData } from '../interfaces/timetable/timetable-data';
 import type { TimetableLesson, TimetableLessonInfo } from '../interfaces/timetable/timetable-lesson';
@@ -74,7 +75,7 @@ function capitalizeString(s: string): string {
 }
 
 function parseCell(cell: string): TimetableLessonInfo | null {
-  const $ = cheerio.load(cell);
+  const $: cheerio.Root = cheerio.load(cell);
   const divs = $('div:not([class])');
   if (divs.length === 1) return getLessonInfo(divs.eq(0).html()!);
   if (divs.length === 2 && divs.eq(1).find('span').first().hasClass('x-treelabel-inv')) {

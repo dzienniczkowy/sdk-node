@@ -9,7 +9,7 @@ import UnknownSymbolError from '../../errors/unknown-symbol';
  */
 export const parseLoginResponds = (html: string): string => {
   const $ = cheerio.load(html);
-  const errorMessage: Cheerio = $('.ErrorMessage');
+  const errorMessage = $('.ErrorMessage');
 
   if (errorMessage.length) {
     const errorMessageText = errorMessage.text().trim();
