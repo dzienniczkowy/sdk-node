@@ -85,14 +85,16 @@ export class Diary {
     url: string,
     data?: unknown,
   ): Promise<T> {
-    const response = await this.api.post<Response<T>>(
-      url,
-      data,
-      {
-        headers: {
-          Cookie: this.getDiaryCookieString(),
+    const response = await this.client.requestWithAutoLogin(
+      () => this.api.post<Response<T>>(
+        url,
+        data,
+        {
+          headers: {
+            Cookie: this.getDiaryCookieString(),
+          },
         },
-      },
+      ),
     );
     return handleResponse(response);
   }

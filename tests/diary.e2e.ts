@@ -4,6 +4,11 @@ import type { DiaryListItem } from '../src/diary/interfaces/diary-list-item';
 
 jest.setTimeout(30000);
 
+const testCredentials = {
+  username: 'jan@fakelog.cf',
+  password: 'jan123',
+};
+
 describe('Diary', () => {
   describe('Diary data', () => {
     let client: wulkanowy.Client;
@@ -11,8 +16,8 @@ describe('Diary', () => {
     let diary: Diary;
 
     beforeAll(async () => {
-      client = new wulkanowy.Client('fakelog.cf');
-      await client.login('jan@fakelog.cf', 'jan123');
+      client = new wulkanowy.Client('fakelog.cf', () => testCredentials);
+      await client.login();
       diaryList = await client.getDiaryList();
       diary = diaryList[0].createDiary();
     });
@@ -60,8 +65,8 @@ describe('Diary', () => {
 
   describe('Helper functions', () => {
     it('Serialize, deserialize', async () => {
-      const client = new wulkanowy.Client('fakelog.cf');
-      await client.login('jan@fakelog.cf', 'jan123');
+      const client = new wulkanowy.Client('fakelog.cf', () => testCredentials);
+      await client.login();
       const diaryList = await client.getDiaryList();
 
       const { serialized } = diaryList[1];

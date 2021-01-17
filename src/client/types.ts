@@ -13,3 +13,10 @@ export type DefaultAjaxPostPayload = {
   wresult: string;
   wctx: string;
 };
+
+export interface Credentials {
+  username: string;
+  password: string;
+}
+
+export type GetCredentialsFunction = () => Credentials | Promise<Credentials>;

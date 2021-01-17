@@ -1,3 +1,4 @@
+import type { AxiosResponse } from 'axios';
 import cheerio from 'cheerio';
 import { CookieJar } from 'tough-cookie';
 import { Diary } from '../diary/diary';
@@ -10,9 +11,10 @@ import type { SerializedClient } from '../diary/interfaces/serialized-client';
 import { mapDiaryInfo } from '../diary/mappers/diary-info';
 import { mapLuckyNumbers } from '../diary/mappers/lucky-numbers';
 import NoUrlListError from '../errors/no-url-list';
+import UnexpectedResponseTypeError from '../errors/unexpected-response-type';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
-  checkUserSignUrl,
+  checkUserSignUrl, getContentType,
   handleResponse,
   joinUrl,
   loginUrl,
@@ -22,7 +24,7 @@ import {
   parseSymbolsXml,
 } from '../utils';
 import { BaseClient } from './base';
-import type { DefaultAjaxPostPayload } from './types';
+import type { DefaultAjaxPostPayload, GetCredentialsFunction } from './types';
 
 /**
  * API client for SDK.
@@ -38,29 +40,34 @@ export class Client extends BaseClient {
   /**
    * API client for SDK constructor.
    * @param host Default host used by user.
+   * @param getCredentials Function to get the user's login info
    * @param cookieJar Use custom CookieJar instead of generating a new one.
    */
   public constructor(
     private readonly host: string,
+    private getCredentials: GetCredentialsFunction,
     cookieJar?: CookieJar,
   ) {
     super(cookieJar ?? new CookieJar());
   }
 
+  public setCredentialsFunction(getCredentials: GetCredentialsFunction): void {
+    this.getCredentials = getCredentials;
+  }
+
   /**
-   * Login user to UONET.
+   * Login user to UONET. Uses username and password from getCredentials function
    *
    * Covers region symbol finding.
-   * @param username User login.
-   * @param password User password.
    * @returns Promise<string> Region symbol for user.
    */
-  public async login(username: string, password: string): Promise<string> {
+  public async login(): Promise<string> {
+    const credentials = await this.getCredentials();
     const response = await this.post<string>(
       loginUrl(this.host),
       {
-        LoginName: username,
-        Password: password,
+        LoginName: credentials.username,
+        Password: credentials.password,
       },
     );
 
@@ -107,20 +114,56 @@ export class Client extends BaseClient {
     };
   }
 
-  public static deserialize(serialized: SerializedClient): Client {
-    const client = new Client(serialized.host, CookieJar.deserializeSync(serialized.cookieJar));
+  public static deserialize(
+    serialized: SerializedClient,
+    getCredentials: GetCredentialsFunction,
+  ): Client {
+    const client = new Client(
+      serialized.host,
+      getCredentials,
+      CookieJar.deserializeSync(serialized.cookieJar),
+    );
     client.symbol = serialized.symbol;
     client.urlList = serialized.urlList;
     return client;
+  }
+
+  private static validateResponse(response: AxiosResponse): void {
+    const headers = response.headers as Record<string, string | undefined>;
+    if (getContentType(headers) !== 'application/json') {
+      throw new UnexpectedResponseTypeError(
+        'application/json',
+        headers['Content-Type'],
+      );
+    }
+  }
+
+  public async requestWithAutoLogin<R>(
+    func: () => Promise<AxiosResponse<R>>,
+  ): Promise<AxiosResponse<R>> {
+    if (this.urlList === undefined) await this.login();
+    try {
+      const response = await func();
+      Client.validateResponse(response);
+      return response;
+    } catch {}
+    await this.login();
+    const response = await func();
+    Client.validateResponse(response);
+    return response;
   }
 
   public async getDiaryList(): Promise<DiaryListItem[]> {
     if (this.urlList === undefined) throw new NoUrlListError();
     const results = await Promise.all(this.urlList.map(async (baseUrl) => {
       const url = joinUrl(baseUrl, 'UczenDziennik.mvc/Get').toString();
+      const response = await this.requestWithAutoLogin(
+        () => this.post<Response<DiaryListData>>(url),
+      );
+      const data = handleResponse(response);
       return {
         baseUrl,
-        data: handleResponse(await this.post<Response<DiaryListData>>(url)),
+        data,
       };
     }));
     return results.flatMap(({ data, baseUrl }) => data.map((dataItem) => {
@@ -138,9 +181,11 @@ export class Client extends BaseClient {
   }
 
   public async getLuckyNumbers(): Promise<LuckyNumber[]> {
-    if (!this.symbol) throw new UnknownSymbolError();
-    const response = await this.post<Response<HomepageData>>(
-      luckyNumbersUrl(this.host, this.symbol),
+    const response = await this.requestWithAutoLogin(
+      () => {
+        if (!this.symbol) throw new UnknownSymbolError();
+        return this.post<Response<HomepageData>>(luckyNumbersUrl(this.host, this.symbol));
+      },
     );
     const data = handleResponse(response);
     return mapLuckyNumbers(data);

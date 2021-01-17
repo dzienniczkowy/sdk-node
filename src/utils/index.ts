@@ -31,3 +31,23 @@ export function parseNotNullOrEmpty(value: string | null | undefined): number | 
   if (value === undefined || value === null || value.trim() === '') return null;
   return parseFloat(value);
 }
+
+export function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+export function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+export function getContentType(headers: unknown): string | undefined {
+  if (!isRecord(headers)) return undefined;
+  const parsedHeaders: Record<string, string | undefined> = Object.fromEntries(
+    Object.entries(headers)
+      .map<[string, unknown]>(([key, value]) => [key.toLowerCase(), value])
+      .filter(([value]) => isString(value)) as [string, string][],
+  );
+  const header = parsedHeaders['content-type'];
+  if (header === undefined) return undefined;
+  return header.split(';')[0];
+}
