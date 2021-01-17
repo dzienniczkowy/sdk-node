@@ -6,8 +6,7 @@ This project aims to allow access to the VULCAN UONET+ with a JavaScript backend
 
 The goal is to combine the **MOBILE** API (used for Dzienniczek+) and **SCRAPPER** of the website, as well as a **HYBRID** mode combining both modes.
 
+We use [SemVer](https://semver.org/).
+
 ## Work in progress
-
-Please note: the SDK is not ready to use in your project yet. At the moment it may be unstable and there are a lot of missing features.
-
-**We do not guarantee backward compatibility during the development**
+**This project is in the faze of initial development. This means versions 0.x.y are used and backward compatibility is not guarented. [Details in SemVer spec](https://semver.org/#spec-item-4)**. At the moment there are also a lot of missing features.
