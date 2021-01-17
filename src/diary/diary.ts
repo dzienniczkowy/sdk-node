@@ -1,4 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import type { Client } from '../client/client';
@@ -10,19 +11,19 @@ import {
   inDateRange,
   requestWeeks,
 } from '../utils';
-import { DiaryInfo } from './interfaces/diary/diary-info';
-import { ExamDay } from './interfaces/exams/exam';
-import { ExamsData } from './interfaces/exams/exams-data';
-import { GradeData } from './interfaces/grades/grade-data';
-import { Grades } from './interfaces/grades/grades';
-import { NotesAndAchievements } from './interfaces/notes-and-achievements/notes-and-achievements';
-import { NotesAndAchievementsData } from './interfaces/notes-and-achievements/notes-and-achievements-data';
-import { Response } from './interfaces/response';
-import { SchoolInfo } from './interfaces/school-info/school-info';
-import { SchoolInfoData } from './interfaces/school-info/school-info-data';
-import { SerializedDiary } from './interfaces/serialized-diary';
-import { Timetable } from './interfaces/timetable/timetable';
-import { TimetableData } from './interfaces/timetable/timetable-data';
+import type { DiaryInfo } from './interfaces/diary/diary-info';
+import type { ExamDay } from './interfaces/exams/exam';
+import type { ExamsData } from './interfaces/exams/exams-data';
+import type { GradeData } from './interfaces/grades/grade-data';
+import type { Grades } from './interfaces/grades/grades';
+import type { NotesAndAchievements } from './interfaces/notes-and-achievements/notes-and-achievements';
+import type { NotesAndAchievementsData } from './interfaces/notes-and-achievements/notes-and-achievements-data';
+import type { Response } from './interfaces/response';
+import type { SchoolInfo } from './interfaces/school-info/school-info';
+import type { SchoolInfoData } from './interfaces/school-info/school-info-data';
+import type { SerializedDiary } from './interfaces/serialized-diary';
+import type { Timetable } from './interfaces/timetable/timetable';
+import type { TimetableData } from './interfaces/timetable/timetable-data';
 import { mapExamDays } from './mappers/exam-mapper';
 import { mapGrades } from './mappers/grade-details';
 import { mapNotesAndAchievements } from './mappers/notes-and-achievements';

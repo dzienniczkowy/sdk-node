@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import { humanDateToDateString, notNil, remoteTimeToDateTimeString } from '../../utils';
-import { TimetableData } from '../interfaces/timetable/timetable-data';
-import { TimetableLesson, TimetableLessonInfo } from '../interfaces/timetable/timetable-lesson';
+import type { TimetableData } from '../interfaces/timetable/timetable-data';
+import type { TimetableLesson, TimetableLessonInfo } from '../interfaces/timetable/timetable-lesson';
 
 function getSubjectAndGroupFromSpan(span: Cheerio): { subject: string; group?: string } {
   return {
@@ -80,8 +80,8 @@ function parseCell(cell: string): TimetableLessonInfo | null {
   if (divs.length === 2 && divs.eq(1).find('span').first().hasClass('x-treelabel-inv')) {
     if (divs.eq(1).find('span').first().hasClass('x-treelabel-ppl')) {
       const newLesson = getLessonInfo(divs.eq(0).html()!);
-      if (newLesson === null) return null;
       const oldLesson = getLessonInfo(divs.eq(1).html()!);
+      if (newLesson === null || oldLesson === null) return null;
       return {
         ...newLesson,
         hasChanges: true,
@@ -90,7 +90,7 @@ function parseCell(cell: string): TimetableLessonInfo | null {
         roomOld: oldLesson?.room,
         info: newLesson.info
           ? capitalizeString(stripLessonInfo(
-            `${getFormattedLessonInfo(newLesson.info)}, ${oldLesson?.info}`,
+            `${getFormattedLessonInfo(newLesson.info)}${oldLesson.info ? `, ${oldLesson.info}` : ''}`,
           ).replace(newLesson.subject, ''))
           : undefined,
       };
@@ -122,7 +122,7 @@ function parseCell(cell: string): TimetableLessonInfo | null {
       subjectOld: oldLesson.subject,
       teacherOld: oldLesson.teacher,
       roomOld: oldLesson.room,
-      info: `Poprzednio: ${oldLesson.subject} (${oldLesson.info})`,
+      info: `Poprzednio: ${oldLesson.subject}${oldLesson.info ? ` (${oldLesson.info})` : ''}`,
     };
   }
   if (divs.length === 2) getLessonInfo(divs.eq(0).html()!);

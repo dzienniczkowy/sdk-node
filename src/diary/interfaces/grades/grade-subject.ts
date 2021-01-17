@@ -1,4 +1,4 @@
-import { PartialGrade } from './partial-grade';
+import type { PartialGrade } from './partial-grade';
 
 export interface GradeSubject {
   name: string;

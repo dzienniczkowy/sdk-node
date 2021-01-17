@@ -1,12 +1,12 @@
 import cheerio from 'cheerio';
 import { CookieJar } from 'tough-cookie';
 import { Diary } from '../diary/diary';
-import { DiaryListItem } from '../diary/interfaces/diary-list-item';
-import { DiaryListData } from '../diary/interfaces/diary/diary-data';
-import { HomepageData } from '../diary/interfaces/homepage/homepage-data';
-import { LuckyNumber } from '../diary/interfaces/homepage/lucky-number';
-import { Response } from '../diary/interfaces/response';
-import { SerializedClient } from '../diary/interfaces/serialized-client';
+import type { DiaryListItem } from '../diary/interfaces/diary-list-item';
+import type { DiaryListData } from '../diary/interfaces/diary/diary-data';
+import type { HomepageData } from '../diary/interfaces/homepage/homepage-data';
+import type { LuckyNumber } from '../diary/interfaces/homepage/lucky-number';
+import type { Response } from '../diary/interfaces/response';
+import type { SerializedClient } from '../diary/interfaces/serialized-client';
 import { mapDiaryInfo } from '../diary/mappers/diary-info';
 import { mapLuckyNumbers } from '../diary/mappers/lucky-numbers';
 import NoUrlListError from '../errors/no-url-list';
@@ -22,7 +22,7 @@ import {
   parseSymbolsXml,
 } from '../utils';
 import { BaseClient } from './base';
-import { DefaultAjaxPostPayload } from './types';
+import type { DefaultAjaxPostPayload } from './types';
 
 /**
  * API client for SDK.

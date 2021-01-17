@@ -1,5 +1,5 @@
-import { AxiosResponse } from 'axios';
-import { Response } from '../diary/interfaces/response';
+import type { AxiosResponse } from 'axios';
+import type { Response } from '../diary/interfaces/response';
 import RequestFailedError from '../errors/request-not-successful';
 
 export * from './links';

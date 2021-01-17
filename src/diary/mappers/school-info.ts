@@ -1,11 +1,11 @@
 import { nullIfEmpty } from '../../utils';
-import { School } from '../interfaces/school-info/school';
-import { SchoolInfo } from '../interfaces/school-info/school-info';
-import {
+import type { School } from '../interfaces/school-info/school';
+import type { SchoolInfo } from '../interfaces/school-info/school-info';
+import type {
   SchoolData,
   SchoolInfoData, TeacherData,
 } from '../interfaces/school-info/school-info-data';
-import { Teacher } from '../interfaces/school-info/teacher';
+import type { Teacher } from '../interfaces/school-info/teacher';
 
 const teacherRegex = /^(.+) \[(.+)]$/;
 

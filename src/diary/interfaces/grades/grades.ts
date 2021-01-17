@@ -1,4 +1,4 @@
-import { GradeSubject } from './grade-subject';
+import type { GradeSubject } from './grade-subject';
 
 export interface Grades {
   subjects: GradeSubject[];

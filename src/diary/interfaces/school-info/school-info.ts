@@ -1,5 +1,5 @@
-import { School } from './school';
-import { Teacher } from './teacher';
+import type { School } from './school';
+import type { Teacher } from './teacher';
 
 export interface SchoolInfo {
   school: School;

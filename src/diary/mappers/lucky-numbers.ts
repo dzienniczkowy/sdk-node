@@ -1,5 +1,5 @@
-import { HomepageData } from '../interfaces/homepage/homepage-data';
-import { LuckyNumber } from '../interfaces/homepage/lucky-number';
+import type { HomepageData } from '../interfaces/homepage/homepage-data';
+import type { LuckyNumber } from '../interfaces/homepage/lucky-number';
 
 export function mapLuckyNumbers(data: HomepageData): LuckyNumber[] {
   return data

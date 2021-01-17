@@ -1,4 +1,4 @@
-import { DiaryInfo } from './diary/diary-info';
+import type { DiaryInfo } from './diary/diary-info';
 
 export interface SerializedDiary {
   info: DiaryInfo;

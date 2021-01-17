@@ -1,6 +1,6 @@
 import { remoteISOToDateString, remoteISOToExtendedISO } from '../../utils';
-import { Exam, ExamDay, ExamTypeName } from '../interfaces/exams/exam';
-import { ExamsData, ExamsDataDay, ExamsDataExam } from '../interfaces/exams/exams-data';
+import type { Exam, ExamDay, ExamTypeName } from '../interfaces/exams/exam';
+import type { ExamsData, ExamsDataDay, ExamsDataExam } from '../interfaces/exams/exams-data';
 
 const displayValueRegex = /^(.+) ([^\s|]+)(?:\|([^\s|]+))?$/;
 

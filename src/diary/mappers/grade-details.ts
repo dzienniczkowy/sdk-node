@@ -1,8 +1,8 @@
 import { humanDateToDateString, nullIfEmpty, parseNotNullOrEmpty } from '../../utils';
-import { GradeData, GradeDataPartial, GradeDataSubject } from '../interfaces/grades/grade-data';
-import { GradeSubject } from '../interfaces/grades/grade-subject';
-import { Grades } from '../interfaces/grades/grades';
-import { Color, PartialGrade } from '../interfaces/grades/partial-grade';
+import type { GradeData, GradeDataPartial, GradeDataSubject } from '../interfaces/grades/grade-data';
+import type { GradeSubject } from '../interfaces/grades/grade-subject';
+import type { Grades } from '../interfaces/grades/grades';
+import type { Color, PartialGrade } from '../interfaces/grades/partial-grade';
 
 function parseColor(decimal: number): Color {
   const hex = decimal.toString(16).padStart(6, '0');

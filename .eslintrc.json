@@ -42,6 +42,10 @@
         "order": "asc"
       },
       "groups": ["builtin", "external", "parent", "sibling", "index"]
+    }],
+    "@typescript-eslint/consistent-type-imports": ["error", {
+      "prefer": "type-imports",
+      "disallowTypeAnnotations": true
     }]
   },
   "settings": {

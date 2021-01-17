@@ -1,6 +1,6 @@
 import { remoteISOToDateString } from '../../utils';
-import { DiaryDataItem, DiaryDataSemester } from '../interfaces/diary/diary-data';
-import { DiaryInfo, Semester } from '../interfaces/diary/diary-info';
+import type { DiaryDataItem, DiaryDataSemester } from '../interfaces/diary/diary-data';
+import type { DiaryInfo, Semester } from '../interfaces/diary/diary-info';
 
 function mapSemester(dataSemester: DiaryDataSemester): Semester {
   return {

@@ -1,6 +1,6 @@
 import * as wulkanowy from '../src';
 import { Diary } from '../src';
-import { DiaryListItem } from '../src/diary/interfaces/diary-list-item';
+import type { DiaryListItem } from '../src/diary/interfaces/diary-list-item';
 
 jest.setTimeout(30000);
 

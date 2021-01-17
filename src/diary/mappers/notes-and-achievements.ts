@@ -1,7 +1,7 @@
 import { parseNotNullOrEmpty, remoteISOToExtendedISO } from '../../utils';
-import { Note, NoteType } from '../interfaces/notes-and-achievements/note';
-import { NotesAndAchievements } from '../interfaces/notes-and-achievements/notes-and-achievements';
-import {
+import type { Note, NoteType } from '../interfaces/notes-and-achievements/note';
+import type { NotesAndAchievements } from '../interfaces/notes-and-achievements/notes-and-achievements';
+import type {
   NoteData,
   NotesAndAchievementsData,
 } from '../interfaces/notes-and-achievements/notes-and-achievements-data';

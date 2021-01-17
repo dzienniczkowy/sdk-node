@@ -1,4 +1,4 @@
-import { CookieJar } from 'tough-cookie';
+import type { CookieJar } from 'tough-cookie';
 
 export type BaseClientConfig = {
   jar: CookieJar;

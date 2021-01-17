@@ -33,10 +33,8 @@ export const parseSymbolsXml = (xml: string): string[] => {
   });
 
   const symbols: string[] = $('[AttributeName$="UserInstance"] saml\\:AttributeValue')
-    .map((
-      iterator,
-      element,
-    ) => $(element).text()).get();
+    .toArray()
+    .map((element) => $(element).text());
 
   if (symbols.length === 0) {
     throw new UnknownSymbolError();

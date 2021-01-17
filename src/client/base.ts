@@ -1,8 +1,10 @@
-import { ParsedUrlQueryInput, stringify } from 'querystring';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import type { ParsedUrlQueryInput } from 'querystring';
+import { stringify } from 'querystring';
+import type { AxiosInstance, AxiosResponse } from 'axios';
+import axios from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
-import { CookieJar } from 'tough-cookie';
-import { BaseClientConfig } from './types';
+import type { CookieJar } from 'tough-cookie';
+import type { BaseClientConfig } from './types';
 
 /**
  * Basic handlers for UONET+ API client.
