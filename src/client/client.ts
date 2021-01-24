@@ -1,5 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import cheerio from 'cheerio';
+import _ from 'lodash';
 import { CookieJar } from 'tough-cookie';
 import { Diary } from '../diary/diary';
 import type { DiaryListItem } from '../diary/interfaces/diary-list-item';
@@ -10,7 +11,6 @@ import type { Response } from '../diary/interfaces/response';
 import type { SerializedClient } from '../diary/interfaces/serialized-client';
 import { mapDiaryInfo } from '../diary/mappers/diary-info';
 import { mapLuckyNumbers } from '../diary/mappers/lucky-numbers';
-import NoUrlListError from '../errors/no-url-list';
 import UnexpectedResponseTypeError from '../errors/unexpected-response-type';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
@@ -31,12 +31,10 @@ import type { DefaultAjaxPostPayload, GetCredentialsFunction } from './types';
  * API client for SDK.
  */
 export class Client extends BaseClient {
-  /**
-   * User region login sign.
-   */
-  private symbol: string | undefined;
-
-  public urlList: string[] | undefined;
+  private symbol: {
+    value: string;
+    urlList: string[];
+  } | undefined;
 
   /**
    * API client for SDK constructor.
@@ -105,22 +103,21 @@ export class Client extends BaseClient {
     }
     if (!Client.indexEndpointValid(html)) throw new UnknownSymbolError();
     const $ = cheerio.load(html);
-    this.urlList = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]')
+    const urlList = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]')
       .toArray()
       .map((element) => $(element).attr('href'))
       .filter(notNil);
-    this.symbol = symbol;
+    this.symbol = { urlList, value: symbol };
   }
 
   public getSymbol(): string | undefined {
-    return this.symbol;
+    return this.symbol?.value;
   }
 
   public serialize(): SerializedClient {
     return {
       cookieJar: this.cookieJar.serializeSync(),
-      urlList: this.urlList === undefined ? undefined : [...this.urlList],
-      symbol: this.symbol,
+      symbol: _.cloneDeep(this.symbol),
       host: this.host,
     };
   }
@@ -134,8 +131,7 @@ export class Client extends BaseClient {
       getCredentials,
       CookieJar.deserializeSync(serialized.cookieJar),
     );
-    client.symbol = serialized.symbol;
-    client.urlList = serialized.urlList;
+    client.symbol = _.cloneDeep(serialized.symbol);
     return client;
   }
 
@@ -152,7 +148,6 @@ export class Client extends BaseClient {
   public async requestWithAutoLogin<R>(
     func: () => Promise<AxiosResponse<R>>,
   ): Promise<AxiosResponse<R>> {
-    if (this.urlList === undefined) await this.login();
     try {
       const response = await func();
       Client.validateResponse(response);
@@ -165,8 +160,8 @@ export class Client extends BaseClient {
   }
 
   public async getDiaryList(): Promise<DiaryListItem[]> {
-    if (this.urlList === undefined) throw new NoUrlListError();
-    const results = await Promise.all(this.urlList.map(async (baseUrl) => {
+    if (this.symbol === undefined) throw new UnknownSymbolError();
+    const results = await Promise.all(this.symbol.urlList.map(async (baseUrl) => {
       const url = joinUrl(baseUrl, 'UczenDziennik.mvc/Get').toString();
       const response = await this.requestWithAutoLogin(
         () => this.post<Response<DiaryListData>>(url),
@@ -195,7 +190,7 @@ export class Client extends BaseClient {
     const response = await this.requestWithAutoLogin(
       () => {
         if (!this.symbol) throw new UnknownSymbolError();
-        return this.post<Response<HomepageData>>(luckyNumbersUrl(this.host, this.symbol));
+        return this.post<Response<HomepageData>>(luckyNumbersUrl(this.host, this.symbol.value));
       },
     );
     const data = handleResponse(response);

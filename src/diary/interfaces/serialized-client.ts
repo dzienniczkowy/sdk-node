@@ -2,7 +2,9 @@ import type { CookieJar } from 'tough-cookie';
 
 export interface SerializedClient {
   cookieJar: CookieJar.Serialized;
-  urlList: string[] | undefined;
-  symbol: string | undefined;
+  symbol: {
+    value: string,
+    urlList: string[];
+  } | undefined;
   host: string;
 }

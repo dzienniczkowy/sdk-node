@@ -1,6 +1,7 @@
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
 import axiosCookieJarSupport from 'axios-cookiejar-support';
+import _ from 'lodash';
 import { CookieJar } from 'tough-cookie';
 import type { Client } from '../client/client';
 import {
@@ -64,7 +65,7 @@ export class Diary {
 
   public serialize(): SerializedDiary {
     return {
-      info: { ...this.info },
+      info: _.cloneDeep(this.info),
       baseUrl: this.baseUrl,
       host: this.host,
     };

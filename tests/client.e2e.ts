@@ -23,7 +23,7 @@ describe('Client', () => {
 
     it('Ger user list before logging in', () => expect(
       client.getDiaryList(),
-    ).rejects.toHaveProperty('name', 'NoUrlListError'));
+    ).rejects.toHaveProperty('name', 'UnknownSymbolError'));
 
     it('Login to fakelog account', async () => {
       expect(client.getSymbol()).toEqual(undefined);
