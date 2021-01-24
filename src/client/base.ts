@@ -10,7 +10,7 @@ import type { BaseClientConfig } from './types';
  * Basic handlers for UONET+ API client.
  */
 export class BaseClient {
-  private api: AxiosInstance;
+  private readonly api: AxiosInstance;
 
   /**
    * Config for post request.
@@ -44,5 +44,15 @@ export class BaseClient {
     payload: ParsedUrlQueryInput = {},
   ): Promise<AxiosResponse<R>> {
     return this.api.post<R>(url, stringify(payload), this.config);
+  }
+
+  /**
+   * Basic get request handler.
+   * @param url URL for request
+   */
+  protected get<R>(
+    url: string,
+  ): Promise<AxiosResponse<R>> {
+    return this.api.get<R>(url, this.config);
   }
 }

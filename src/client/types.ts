@@ -20,3 +20,8 @@ export interface Credentials {
 }
 
 export type GetCredentialsFunction = () => Credentials | Promise<Credentials>;
+
+export interface SymbolItem {
+  symbol: string;
+  html: string;
+}

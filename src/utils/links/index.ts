@@ -24,6 +24,14 @@ export const loginUrl = (host: string): string => `https://cufs.${host}/Default/
 export const checkUserSignUrl = (host: string, symbol: string): string => joinUrl(uonetPlusBaseUrl(host, symbol), 'LoginEndpoint.aspx').toString();
 
 /**
+ * Start URL.
+ * @param host User login host.
+ * @param symbol Region tag.
+ * @returns Start page absolute endpoint URL.
+ */
+export const startIndexUrl = (host: string, symbol: string): string => joinUrl(uonetPlusBaseUrl(host, symbol), 'Start.mvc/Index').toString();
+
+/**
  * Lucky number tile URL.
  * @param host User login host.
  * @param symbol Region tag.

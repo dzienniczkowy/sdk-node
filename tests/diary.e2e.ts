@@ -17,7 +17,8 @@ describe('Diary', () => {
 
     beforeAll(async () => {
       client = new wulkanowy.Client('fakelog.cf', () => testCredentials);
-      await client.login();
+      const symbols = await client.login();
+      await client.setSymbol(symbols[0]);
       diaryList = await client.getDiaryList();
       diary = diaryList[0].createDiary();
     });
@@ -66,7 +67,8 @@ describe('Diary', () => {
   describe('Helper functions', () => {
     it('Serialize, deserialize', async () => {
       const client = new wulkanowy.Client('fakelog.cf', () => testCredentials);
-      await client.login();
+      const symbols = await client.login();
+      await client.setSymbol(symbols[0]);
       const diaryList = await client.getDiaryList();
 
       const { serialized } = diaryList[1];

@@ -22,6 +22,7 @@ import {
   notNil,
   parseLoginResponds,
   parseSymbolsXml,
+  startIndexUrl,
 } from '../utils';
 import { BaseClient } from './base';
 import type { DefaultAjaxPostPayload, GetCredentialsFunction } from './types';
@@ -33,7 +34,7 @@ export class Client extends BaseClient {
   /**
    * User region login sign.
    */
-  public symbol: string | undefined;
+  private symbol: string | undefined;
 
   public urlList: string[] | undefined;
 
@@ -55,13 +56,17 @@ export class Client extends BaseClient {
     this.getCredentials = getCredentials;
   }
 
+  private static indexEndpointValid(html: string): boolean {
+    return html.includes('newAppLink');
+  }
+
   /**
    * Login user to UONET. Uses username and password from getCredentials function
    *
    * Covers region symbol finding.
-   * @returns Promise<string> Region symbol for user.
+   * @returns Promise<string[]> List of valid region symbols.
    */
-  public async login(): Promise<string> {
+  public async login(): Promise<string[]> {
     const credentials = await this.getCredentials();
     const response = await this.post<string>(
       loginUrl(this.host),
@@ -72,37 +77,43 @@ export class Client extends BaseClient {
     );
 
     const xml = parseLoginResponds(response.data);
-
     const symbols = parseSymbolsXml(xml);
 
-    await Promise.all(symbols.map(async (symbol) => {
-      const currentUrl = checkUserSignUrl(this.host, symbol);
-      const payload: DefaultAjaxPostPayload = {
-        wa: 'wsignin1.0',
-        wresult: xml,
-        wctx: currentUrl,
-      };
-      const { data } = await this.post<string>(
-        currentUrl,
-        payload,
-      );
-
-      if (data.includes('newAppLink')) {
-        this.initClient(data, symbol);
-      }
-    }));
-
-    if (!this.symbol) throw new UnknownSymbolError();
-    return this.symbol;
+    const symbolFunctions = await Promise.all(
+      symbols.map(async (symbol): Promise<string | null> => {
+        const currentUrl = checkUserSignUrl(this.host, symbol);
+        const payload: DefaultAjaxPostPayload = {
+          wa: 'wsignin1.0',
+          wresult: xml,
+          wctx: currentUrl,
+        };
+        const { data } = await this.post<string>(currentUrl, payload);
+        if (!Client.indexEndpointValid(data)) return null;
+        return symbol;
+      }),
+    );
+    return symbolFunctions.filter(notNil);
   }
 
-  private initClient(mainResponse: string, symbol: string): void {
-    this.symbol = symbol;
-    const $ = cheerio.load(mainResponse);
+  public async setSymbol(symbol: string): Promise<void> {
+    let html: string;
+    try {
+      const response = await this.get<string>(startIndexUrl(this.host, symbol));
+      html = response.data;
+    } catch (error) {
+      throw new UnknownSymbolError();
+    }
+    if (!Client.indexEndpointValid(html)) throw new UnknownSymbolError();
+    const $ = cheerio.load(html);
     this.urlList = $('.panel.linkownia.pracownik.klient a[href*="uonetplus-uczen"]')
       .toArray()
       .map((element) => $(element).attr('href'))
       .filter(notNil);
+    this.symbol = symbol;
+  }
+
+  public getSymbol(): string | undefined {
+    return this.symbol;
   }
 
   public serialize(): SerializedClient {

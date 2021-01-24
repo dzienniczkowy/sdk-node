@@ -26,7 +26,13 @@ describe('Client', () => {
     ).rejects.toHaveProperty('name', 'NoUrlListError'));
 
     it('Login to fakelog account', async () => {
-      await expect(client.login()).resolves.toEqual('powiatwulkanowy');
+      expect(client.getSymbol()).toEqual(undefined);
+      await expect(client.login()).resolves.toEqual(['powiatwulkanowy']);
+      expect(client.getSymbol()).toEqual(undefined);
+      await client.setSymbol('powiatwulkanowy');
+      expect(client.getSymbol()).toEqual('powiatwulkanowy');
+      await expect(() => client.setSymbol('intenselyfakesymbol')).rejects.toHaveProperty('name', 'UnknownSymbolError');
+      expect(client.getSymbol()).toEqual('powiatwulkanowy');
     });
 
     it('Throws error if login credentials are invalid', async () => {
@@ -40,7 +46,9 @@ describe('Client', () => {
 
     it('Get user list', async () => {
       client.setCredentialsFunction(() => testCredentials);
-      await client.login();
+      const symbols = await client.login();
+      expect(symbols[0]).toEqual('powiatwulkanowy');
+      await client.setSymbol(symbols[0]);
       const diaryList = await client.getDiaryList();
       expect(diaryList[0].serialized.host).toEqual('fakelog.cf');
       diaryList[0].createDiary();
@@ -52,7 +60,8 @@ describe('Client', () => {
 
     beforeAll(async () => {
       client = new wulkanowy.Client('fakelog.cf', () => testCredentials);
-      await client.login();
+      const symbols = await client.login();
+      await client.setSymbol(symbols[0]);
     });
 
     afterAll(() => {
@@ -73,7 +82,8 @@ describe('Client', () => {
   describe('Helper functions', () => {
     it('Serialize, deserialize', async () => {
       const client = new wulkanowy.Client('fakelog.cf', () => testCredentials);
-      await client.login();
+      const symbols = await client.login();
+      await client.setSymbol(symbols[0]);
       const serialized = client.serialize();
       const deserialized = Client.deserialize(serialized, () => testCredentials);
       const serializedAgain = deserialized.serialize();
