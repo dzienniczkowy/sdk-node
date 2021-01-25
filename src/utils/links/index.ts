@@ -8,6 +8,8 @@ import { joinUrl } from '../url';
 
 const uonetPlusBaseUrl = (host: string, symbol: string): string => `https://uonetplus.${host}/${symbol}`;
 
+const uonetPlusUserUrl = (host: string, symbol: string): string => `https://uonetplus-uzytkownik.${host}/${symbol}`;
+
 /**
  * Login URL.
  * @param host Host address.
@@ -38,3 +40,5 @@ export const startIndexUrl = (host: string, symbol: string): string => joinUrl(u
  * @returns Lucky number tile absolute endpoint URL.
  */
 export const luckyNumbersUrl = (host: string, symbol: string): string => joinUrl(uonetPlusBaseUrl(host, symbol), 'Start.mvc/GetKidsLuckyNumbers').toString();
+
+export const reportingUnitsUrl = (host: string, symbol: string): string => joinUrl(uonetPlusUserUrl(host, symbol), 'NowaWiadomosc.mvc/GetJednostkiUzytkownika').toString();

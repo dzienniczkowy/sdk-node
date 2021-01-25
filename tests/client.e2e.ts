@@ -72,7 +72,11 @@ describe('Client', () => {
       await client.getLuckyNumbers();
     });
 
-    // Won't ever fail with fakelog.cf
+    it('Get reporting units', async () => {
+      await expect(client.getReportingUnits()).resolves.toHaveProperty('length', 1);
+    });
+
+    // Won't ever fail with fakeloReg.cf
     it('Auto login', async () => {
       client.cookieJar.removeAllCookiesSync();
       await client.getLuckyNumbers();

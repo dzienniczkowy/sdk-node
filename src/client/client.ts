@@ -7,10 +7,13 @@ import type { DiaryListItem } from '../diary/interfaces/diary-list-item';
 import type { DiaryListData } from '../diary/interfaces/diary/diary-data';
 import type { HomepageData } from '../diary/interfaces/homepage/homepage-data';
 import type { LuckyNumber } from '../diary/interfaces/homepage/lucky-number';
+import type { ReportingUnit } from '../diary/interfaces/messages/reporting-unit';
+import type { ReportingUnitData } from '../diary/interfaces/messages/reporting-unit-data';
 import type { Response } from '../diary/interfaces/response';
 import type { SerializedClient } from '../diary/interfaces/serialized-client';
 import { mapDiaryInfo } from '../diary/mappers/diary-info';
 import { mapLuckyNumbers } from '../diary/mappers/lucky-numbers';
+import { mapReportingUnits } from '../diary/mappers/reporting-units';
 import UnexpectedResponseTypeError from '../errors/unexpected-response-type';
 import UnknownSymbolError from '../errors/unknown-symbol';
 import {
@@ -21,7 +24,7 @@ import {
   luckyNumbersUrl,
   notNil,
   parseLoginResponds,
-  parseSymbolsXml,
+  parseSymbolsXml, reportingUnitsUrl,
   startIndexUrl,
 } from '../utils';
 import { BaseClient } from './base';
@@ -195,5 +198,17 @@ export class Client extends BaseClient {
     );
     const data = handleResponse(response);
     return mapLuckyNumbers(data);
+  }
+
+  public async getReportingUnits(): Promise<ReportingUnit[]> {
+    const response = await this.requestWithAutoLogin(
+      () => {
+        if (!this.symbol) throw new UnknownSymbolError();
+        const url = reportingUnitsUrl(this.host, this.symbol.value);
+        return this.get<Response<ReportingUnitData>>(url);
+      },
+    );
+    const data = handleResponse(response);
+    return mapReportingUnits(data);
   }
 }
